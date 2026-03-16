@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:project_collaboration_app/utils/result.dart';
 
 abstract class AuthRepository extends ChangeNotifier {
   Future<bool> get isAuthenticated;
-  Future<void> login(String email, String password);
-  Future<void> register(String email, String password);
-  Future<void> logout();
+  Future<Result<void>> login(String email, String password);
+  Future<Result<void>> register(String email, String password);
+  Future<Result<void>> logout();
 }
