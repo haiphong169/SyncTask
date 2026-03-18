@@ -46,3 +46,5 @@ app.*.map.json
 
 # Firebase config - exclude Google services config from VCS
 /android/app/google-services.json
+# Generated firebase options (Dart)
+lib/firebase_options.dart

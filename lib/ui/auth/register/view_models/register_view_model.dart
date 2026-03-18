@@ -13,13 +13,14 @@ class RegisterViewModel extends Cubit<VoidUiState> {
   Future<void> register({
     String? email,
     String? password,
+    String? username,
     bool signInWithGoogle = false,
   }) async {
     emit(VoidUiState.loading());
     final result =
         signInWithGoogle
             ? await _authRepository.login(signInWithGoogle: true)
-            : await _authRepository.register(email!, password!);
+            : await _authRepository.register(email!, password!, username!);
     switch (result) {
       case Ok<void>():
         emit(VoidUiState.idle());

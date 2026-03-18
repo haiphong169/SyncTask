@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_collaboration_app/domain/abstract_repositories/auth_repository.dart';
 import 'package:project_collaboration_app/routing/routes.dart';
+import 'package:project_collaboration_app/ui/auth/auth_view_model.dart';
 import 'package:project_collaboration_app/ui/auth/login/view_models/login_view_model.dart';
 import 'package:project_collaboration_app/ui/auth/login/widgets/login_screen.dart';
-import 'package:project_collaboration_app/ui/auth/logout/view_models/logout_view_model.dart';
+import 'package:project_collaboration_app/ui/auth/logout_view_model.dart';
 import 'package:project_collaboration_app/ui/auth/register/view_models/register_view_model.dart';
 import 'package:project_collaboration_app/ui/auth/register/widgets/register_screen.dart';
 import 'package:project_collaboration_app/ui/core/ui/bottom_nav_bar_screen.dart';
@@ -86,7 +87,11 @@ GoRouter router(AuthRepository authRepository) {
             path: Routes.profile,
             builder: (context, state) {
               return ProfileScreen(
-                viewModel: LogoutViewModel(authRepository: authRepository),
+                authViewModel: AuthViewModel(authRepository: authRepository)
+                  ..fetchUser(),
+                logoutViewModel: LogoutViewModel(
+                  authRepository: authRepository,
+                ),
               );
             },
           ),
@@ -97,16 +102,16 @@ GoRouter router(AuthRepository authRepository) {
 }
 
 Future<String?> _redirect(BuildContext context, GoRouterState state) async {
-  final loggedIn = await context.read<AuthRepository>().isAuthenticated;
+  final currentUser = await context.read<AuthRepository>().user;
   final loggingIn =
       state.matchedLocation == Routes.login ||
       state.matchedLocation == Routes.register;
 
-  if (!loggedIn && !loggingIn) {
+  if (currentUser == null && !loggingIn) {
     return Routes.login;
   }
 
-  if (loggedIn && loggingIn) {
+  if (currentUser != null && loggingIn) {
     return Routes.home;
   }
 

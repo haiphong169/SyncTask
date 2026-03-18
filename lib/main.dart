@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:project_collaboration_app/config/dependencies.dart';
+import 'package:project_collaboration_app/config/hive_adapters.dart';
 import 'package:project_collaboration_app/firebase_options.dart';
 import 'package:project_collaboration_app/routing/router.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +18,8 @@ void main() async {
     serverClientId:
         '925752366644-92fuln9a8sheehrnf0bpl0cle87clk2m.apps.googleusercontent.com',
   );
+  await Hive.initFlutter();
+  addHiveAdapters();
   runApp(
     MultiRepositoryProvider(
       providers: repositoryProviders,

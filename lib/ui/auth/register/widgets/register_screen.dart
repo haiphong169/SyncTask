@@ -146,6 +146,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 widget.viewModel.register(
                                   email: _emailController.text,
                                   password: _passwordController.text,
+                                  username: _usernameController.text,
                                 );
                               },
                       child: Padding(

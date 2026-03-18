@@ -1,3 +1,5 @@
+typedef VoidResult = Result<void>;
+
 sealed class Result<T> {
   const Result();
 

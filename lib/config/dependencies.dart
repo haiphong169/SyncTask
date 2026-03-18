@@ -1,19 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:project_collaboration_app/data/repositories/auth/auth_repository_remote.dart';
-import 'package:project_collaboration_app/data/services/firebase_auth_client.dart';
-import 'package:project_collaboration_app/data/services/shared_preferences_client.dart';
+import 'package:project_collaboration_app/data/repositories/auth/auth_repository_impl.dart';
+import 'package:project_collaboration_app/data/services/auth/firebase_auth_client.dart';
+import 'package:project_collaboration_app/data/services/auth/hive_auth_client.dart';
 import 'package:project_collaboration_app/domain/abstract_repositories/auth_repository.dart';
 
 final repositoryProviders = [
-  RepositoryProvider<SharedPreferencesClient>(
-    create: (_) => SharedPreferencesClient(),
-  ),
+  RepositoryProvider<HiveAuthClient>(create: (_) => HiveAuthClient()),
   RepositoryProvider<FirebaseAuthClient>(create: (_) => FirebaseAuthClient()),
   RepositoryProvider<AuthRepository>(
     create:
-        (context) => AuthRepositoryRemote(
-          sharedPreferencesClient: context.read(),
+        (context) => AuthRepositoryImpl(
           firebaseAuthClient: context.read(),
+          hiveClient: context.read(),
         ),
   ),
 ];

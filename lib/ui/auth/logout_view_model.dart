@@ -15,7 +15,7 @@ class LogoutViewModel extends Cubit<VoidUiState> {
     final result = await _authRepository.logout();
     switch (result) {
       case Ok<void>():
-        emit(VoidUiState.idle());
+        emit(VoidUiState.success(null));
       case Failure<void>():
         emit(
           VoidUiState.error(
