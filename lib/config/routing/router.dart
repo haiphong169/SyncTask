@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_collaboration_app/features/auth/domain/repositories/auth_repository.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/get_conversation_list_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/get_conversation_messages_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/send_message_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/presentation/bloc/conversation_cubit.dart';
+import 'package:project_collaboration_app/features/messaging/presentation/bloc/message_screen_cubit.dart';
+import 'package:project_collaboration_app/features/messaging/presentation/widgets/conversation_screen.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/widgets/message_screen.dart';
 import 'package:project_collaboration_app/features/user/domain/usecases/get_user_use_case.dart';
 import 'package:project_collaboration_app/features/auth/domain/usecases/login_usecase.dart';
@@ -83,6 +89,28 @@ GoRouter router(AuthRepository authRepository) {
         },
       ),
       GoRoute(
+        path: '${Routes.conversation}/:conversationId',
+        builder: (context, state) {
+          final conversationId = state.pathParameters['conversationId']!;
+          return BlocProvider(
+            create:
+                (context) => ConversationCubit(
+                  conversationId: conversationId,
+                  getConversationMessagesUsecase:
+                      GetConversationMessagesUsecase(
+                        messageRepository: context.read(),
+                      ),
+                  sendMessageUsecase: SendMessageUsecase(
+                    messageRepository: context.read(),
+                    conversationRepository: context.read(),
+                    sessionProvider: context.read(),
+                  ),
+                )..fetchMessages(),
+            child: ConversationScreen(),
+          );
+        },
+      ),
+      GoRoute(
         path: Routes.userSearch,
         builder: (context, state) {
           return BlocProvider(
@@ -113,11 +141,11 @@ GoRouter router(AuthRepository authRepository) {
             builder: (context, state) {
               return BlocProvider(
                 create:
-                    (context) => SearchUserBloc(
-                      searchUserUseCase: SearchUserUseCase(
-                        userRepository: context.read(),
+                    (context) => MessageScreenCubit(
+                      getConversationListUseCase: GetConversationListUsecase(
+                        conversationRepository: context.read(),
                       ),
-                    ),
+                    )..fetchConversations(),
                 child: MessageScreen(),
               );
             },

@@ -18,4 +18,8 @@ abstract final class Routes {
   static const profile = '/profile';
 
   static const userSearch = '/userSearch';
+
+  static const conversation = '/conversation';
+  static String conversationWithId(String conversationId) =>
+      '$conversation/$conversationId';
 }
