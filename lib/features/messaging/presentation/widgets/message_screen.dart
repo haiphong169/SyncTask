@@ -18,7 +18,7 @@ class MessageScreen extends StatelessWidget {
             SizedBox(height: 48),
             MessageSearchBar(
               onTap: () {
-                context.push(Routes.userSearch);
+                context.push(Routes.userSearch, extra: Routes.messages);
               },
             ),
             SizedBox(height: 48),
@@ -55,7 +55,6 @@ class MessageScreen extends StatelessWidget {
 
 class _ConversationListTile extends StatelessWidget {
   const _ConversationListTile({
-    super.key,
     required this.conversation,
     required this.onTap,
   });

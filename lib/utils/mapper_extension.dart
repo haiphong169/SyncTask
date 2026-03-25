@@ -1,4 +1,6 @@
+import 'package:project_collaboration_app/features/messaging/data/models/conversation_model.dart';
 import 'package:project_collaboration_app/features/messaging/data/models/message_model.dart';
+import 'package:project_collaboration_app/features/messaging/domain/entities/conversation.dart';
 import 'package:project_collaboration_app/features/messaging/domain/entities/message.dart';
 import 'package:project_collaboration_app/features/user/data/models/user_model.dart';
 import 'package:project_collaboration_app/features/user/domain/entities/user.dart';
@@ -27,6 +29,18 @@ extension MessageMapper on Message {
       senderUid: senderUid,
       text: text,
       createdAt: createdAt,
+    );
+  }
+}
+
+extension ConversationMapper on Conversation {
+  ConversationModel toModel() {
+    return ConversationModel(
+      uid: uid,
+      participants: participants,
+      lastMessage: lastMessage,
+      lastMessageAt: lastMessageAt,
+      lastMessageSenderUid: lastMessageSenderUid,
     );
   }
 }

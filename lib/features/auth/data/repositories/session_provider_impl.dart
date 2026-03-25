@@ -14,10 +14,6 @@ class SessionProviderImpl implements SessionProvider {
 
   @override
   Future<User?> get user async {
-    if (_user != null) {
-      return _user!;
-    }
-
     await _fetchUser();
     return _user;
   }

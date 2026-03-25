@@ -47,7 +47,6 @@ final repositoryProviders = [
     create:
         (context) => ConversationRepositoryImpl(
           conversationRemoteDataSource: conversationRemoteDataSource,
-          userLocalDataSource: userLocalDataSource,
         ),
   ),
   RepositoryProvider<MessageRepository>(

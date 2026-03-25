@@ -2,10 +2,9 @@ import 'package:project_collaboration_app/features/messaging/data/data_sources/m
 import 'package:project_collaboration_app/features/messaging/data/models/message_model.dart';
 import 'package:project_collaboration_app/features/messaging/domain/entities/message.dart';
 import 'package:project_collaboration_app/features/messaging/domain/repositories/message_repository.dart';
-import 'package:project_collaboration_app/utils/app_exception.dart';
-import 'package:project_collaboration_app/utils/logger.dart';
 import 'package:project_collaboration_app/utils/mapper_extension.dart';
 import 'package:project_collaboration_app/utils/result.dart';
+import 'package:project_collaboration_app/utils/type_def.dart';
 
 class MessageRepositoryImpl implements MessageRepository {
   final MessageRemoteDataSource _messageRemoteDataSource;
@@ -15,7 +14,7 @@ class MessageRepositoryImpl implements MessageRepository {
   }) : _messageRemoteDataSource = messageRemoteDataSource;
 
   @override
-  Future<Result<Stream<List<Message>>>> conversationMessages(
+  Future<Result<MessageStream>> conversationMessages(
     String conversationUid,
   ) async {
     final result = await _messageRemoteDataSource.conversationMessages(
@@ -40,14 +39,7 @@ class MessageRepositoryImpl implements MessageRepository {
   }
 
   @override
-  Future<VoidResult> sendMessage(Message message) async {
-    try {
-      AppLogger().d('repository impl');
-      await _messageRemoteDataSource.sendMessage(message.toModel());
-      return Result.ok(null);
-    } on Exception {
-      AppLogger().e('something is wrong');
-      return Result.failure(FirestoreException());
-    }
+  Future<VoidResult> sendMessage(Message message) {
+    return _messageRemoteDataSource.sendMessage(message.toModel());
   }
 }

@@ -35,7 +35,8 @@ class MessageRemoteDataSource {
           .collection(_conversationKey)
           .doc(message.conversationUid)
           .collection(_messageKey)
-          .add(message.toJson());
+          .doc(message.uid)
+          .set(message.toJson());
       return Result.ok(null);
     } on Exception {
       return Result.failure(FirestoreException());

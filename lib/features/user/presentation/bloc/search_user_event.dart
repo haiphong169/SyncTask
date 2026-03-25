@@ -6,3 +6,8 @@ class SearchQueryChanged extends SearchUserEvent {
 }
 
 class SearchCleared extends SearchUserEvent {}
+
+class ResultTapped extends SearchUserEvent {
+  final String resultUid;
+  ResultTapped(this.resultUid);
+}

@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:project_collaboration_app/config/routing/routes.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/check_existing_conversation_usecase.dart';
 import 'package:project_collaboration_app/features/user/presentation/bloc/search_user_bloc.dart';
 import 'package:project_collaboration_app/features/user/presentation/bloc/search_user_event.dart';
 import 'package:project_collaboration_app/features/user/presentation/bloc/search_user_state.dart';
 import 'package:project_collaboration_app/features/user/presentation/widgets/user_search_bar.dart';
+import 'package:project_collaboration_app/utils/result.dart';
 
 class UserSearchScreen extends StatefulWidget {
-  const UserSearchScreen({super.key});
+  const UserSearchScreen({
+    super.key,
+    required this.origin,
+    required this.usecase,
+  });
+  final String origin;
+  final CheckExistingConversationUsecase usecase;
 
   @override
   State<UserSearchScreen> createState() => _UserSearchScreenState();
@@ -74,7 +84,41 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                         itemCount: state.users.length,
                         itemBuilder: (_, i) {
                           final user = state.users[i];
-                          return ListTile(title: Text(user.username));
+                          return ListTile(
+                            title: Text(user.username),
+                            onTap: () async {
+                              final partnerUid = user.uid;
+                              if (widget.origin == Routes.messages) {
+                                final result = await widget.usecase(partnerUid);
+
+                                switch (result) {
+                                  case Ok(data: final conversationId):
+                                    if (conversationId != null && mounted) {
+                                      context.push(
+                                        Routes.conversationWithId(
+                                          conversationId,
+                                        ),
+                                      );
+                                    } else {
+                                      context.push(
+                                        Routes.mockConversationWithId(
+                                          partnerUid,
+                                        ),
+                                      );
+                                    }
+
+                                  case Failure():
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Failed to check conversation',
+                                        ),
+                                      ),
+                                    );
+                                }
+                              }
+                            },
+                          );
                         },
                       );
                   }

@@ -28,21 +28,12 @@ class ConversationRemoteDataSource {
     }
   }
 
-  Future<VoidResult> addConversation(
-    List<String> participants,
-    String firstMessage,
-    String userUid,
-  ) async {
+  Future<VoidResult> addConversation(ConversationModel conversation) async {
     try {
-      final docRef = _db.collection(_conversationKey).doc();
-      final conversation = ConversationModel(
-        uid: docRef.id,
-        participants: participants,
-        lastMessage: firstMessage,
-        lastMessageAt: DateTime.now(),
-        lastMessageSenderUid: userUid,
-      );
-      await docRef.set(conversation.toJson());
+      await _db
+          .collection(_conversationKey)
+          .doc(conversation.uid)
+          .set(conversation.toJson());
       return Result.ok(null);
     } on Exception {
       return Result.failure(FirestoreException());
@@ -70,6 +61,31 @@ class ConversationRemoteDataSource {
       });
       return Result.ok(null);
     } on Exception {
+      return Result.failure(FirestoreException());
+    }
+  }
+
+  Future<Result<String?>> checkExistingConversation(
+    String partnerUid,
+    String userUid,
+  ) async {
+    try {
+      final snapshot =
+          await _db
+              .collection(_conversationKey)
+              .where('participants', arrayContains: userUid)
+              .get();
+
+      for (final doc in snapshot.docs) {
+        final participants = List<String>.from(doc['participants']);
+
+        if (participants.contains(partnerUid)) {
+          return Result.ok(doc.id);
+        }
+      }
+
+      return Result.ok(null);
+    } catch (e) {
       return Result.failure(FirestoreException());
     }
   }

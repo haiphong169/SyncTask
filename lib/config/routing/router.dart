@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_collaboration_app/features/auth/domain/repositories/auth_repository.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/add_conversation_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/check_existing_conversation_usecase.dart';
 import 'package:project_collaboration_app/features/messaging/domain/usecases/get_conversation_list_usecase.dart';
 import 'package:project_collaboration_app/features/messaging/domain/usecases/get_conversation_messages_usecase.dart';
 import 'package:project_collaboration_app/features/messaging/domain/usecases/send_message_usecase.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/bloc/conversation_cubit.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/bloc/message_screen_cubit.dart';
+import 'package:project_collaboration_app/features/messaging/presentation/bloc/mock_conversation_bloc.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/widgets/conversation_screen.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/widgets/message_screen.dart';
+import 'package:project_collaboration_app/features/messaging/presentation/widgets/mock_conversation_screen.dart';
 import 'package:project_collaboration_app/features/user/domain/usecases/get_user_use_case.dart';
 import 'package:project_collaboration_app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:project_collaboration_app/features/auth/domain/usecases/logout_usecase.dart';
@@ -89,6 +93,29 @@ GoRouter router(AuthRepository authRepository) {
         },
       ),
       GoRoute(
+        path: '${Routes.mockConversation}/:partnerId',
+        builder: (context, state) {
+          final partnerId = state.pathParameters['partnerId']!;
+          return BlocProvider(
+            create:
+                (context) => MockConversationBloc(
+                  partnerId: partnerId,
+                  addConversationUseCase: AddConversationUsecase(
+                    conversationRepository: context.read(),
+                    messageRepository: context.read(),
+                    sessionProvider: context.read(),
+                  ),
+                  sendMessageUseCase: SendMessageUsecase(
+                    messageRepository: context.read(),
+                    conversationRepository: context.read(),
+                    sessionProvider: context.read(),
+                  ),
+                ),
+            child: MockConversationScreen(),
+          );
+        },
+      ),
+      GoRoute(
         path: '${Routes.conversation}/:conversationId',
         builder: (context, state) {
           final conversationId = state.pathParameters['conversationId']!;
@@ -113,6 +140,7 @@ GoRouter router(AuthRepository authRepository) {
       GoRoute(
         path: Routes.userSearch,
         builder: (context, state) {
+          final origin = state.extra as String;
           return BlocProvider(
             create:
                 (context) => SearchUserBloc(
@@ -120,7 +148,13 @@ GoRouter router(AuthRepository authRepository) {
                     userRepository: context.read(),
                   ),
                 ),
-            child: UserSearchScreen(),
+            child: UserSearchScreen(
+              origin: origin,
+              usecase: CheckExistingConversationUsecase(
+                conversationRepository: context.read(),
+                sessionProvider: context.read(),
+              ),
+            ),
           );
         },
       ),
@@ -144,6 +178,7 @@ GoRouter router(AuthRepository authRepository) {
                     (context) => MessageScreenCubit(
                       getConversationListUseCase: GetConversationListUsecase(
                         conversationRepository: context.read(),
+                        sessionProvider: context.read(),
                       ),
                     )..fetchConversations(),
                 child: MessageScreen(),
