@@ -2,11 +2,11 @@ import 'package:project_collaboration_app/features/auth/domain/repositories/auth
 import 'package:project_collaboration_app/features/auth/domain/repositories/session_provider.dart';
 import 'package:project_collaboration_app/utils/result.dart';
 
-class LogoutUsecase {
+class LogoutUseCase {
   final AuthRepository _authRepository;
   final SessionProvider _session;
 
-  LogoutUsecase({
+  LogoutUseCase({
     required AuthRepository authRepository,
     required SessionProvider sessionProvider,
   }) : _authRepository = authRepository,

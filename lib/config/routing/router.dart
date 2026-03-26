@@ -60,16 +60,9 @@ GoRouter router(SessionListenable sessionListenable) {
           return BlocProvider(
             create:
                 (context) => LoginCubit(
-                  loginUseCase: LoginUseCase(
-                    authRepository: context.read(),
-                    userRepository: context.read(),
-                    sessionProvider: context.read(),
-                  ),
-                  signInWithGoogleUseCase: SignInWithGoogleUseCase(
-                    authRepository: context.read(),
-                    userRepository: context.read(),
-                    sessionProvider: context.read(),
-                  ),
+                  loginUseCase: context.read<LoginUseCase>(),
+                  signInWithGoogleUseCase:
+                      context.read<SignInWithGoogleUseCase>(),
                 ),
             child: LoginScreen(),
           );
@@ -81,16 +74,9 @@ GoRouter router(SessionListenable sessionListenable) {
           return BlocProvider(
             create:
                 (context) => RegisterCubit(
-                  registerUseCase: RegisterUseCase(
-                    authRepository: context.read(),
-                    userRepository: context.read(),
-                    sessionProvider: context.read(),
-                  ),
-                  signInWithGoogleUseCase: SignInWithGoogleUseCase(
-                    authRepository: context.read(),
-                    userRepository: context.read(),
-                    sessionProvider: context.read(),
-                  ),
+                  registerUseCase: context.read<RegisterUseCase>(),
+                  signInWithGoogleUseCase:
+                      context.read<SignInWithGoogleUseCase>(),
                 ),
             child: RegisterScreen(),
           );
@@ -127,16 +113,9 @@ GoRouter router(SessionListenable sessionListenable) {
             create:
                 (context) => MockConversationBloc(
                   partnerId: partnerId,
-                  addConversationUseCase: AddConversationUsecase(
-                    conversationRepository: context.read(),
-                    messageRepository: context.read(),
-                    sessionProvider: context.read(),
-                  ),
-                  sendMessageUseCase: SendMessageUsecase(
-                    messageRepository: context.read(),
-                    conversationRepository: context.read(),
-                    sessionProvider: context.read(),
-                  ),
+                  addConversationUseCase:
+                      context.read<AddConversationUsecase>(),
+                  sendMessageUseCase: context.read<SendMessageUsecase>(),
                 ),
             child: MockConversationScreen(),
           );
@@ -151,14 +130,8 @@ GoRouter router(SessionListenable sessionListenable) {
                 (context) => ConversationCubit(
                   conversationId: conversationId,
                   getConversationMessagesUsecase:
-                      GetConversationMessagesUsecase(
-                        messageRepository: context.read(),
-                      ),
-                  sendMessageUsecase: SendMessageUsecase(
-                    messageRepository: context.read(),
-                    conversationRepository: context.read(),
-                    sessionProvider: context.read(),
-                  ),
+                      context.read<GetConversationMessagesUsecase>(),
+                  sendMessageUsecase: context.read<SendMessageUsecase>(),
                 )..fetchMessages(),
             child: ConversationScreen(),
           );
@@ -171,16 +144,11 @@ GoRouter router(SessionListenable sessionListenable) {
           return BlocProvider(
             create:
                 (context) => SearchUserBloc(
-                  searchUserUseCase: SearchUserUseCase(
-                    userRepository: context.read(),
-                  ),
+                  searchUserUseCase: context.read<SearchUserUseCase>(),
                 ),
             child: UserSearchScreen(
               origin: origin,
-              usecase: CheckExistingConversationUsecase(
-                conversationRepository: context.read(),
-                sessionProvider: context.read(),
-              ),
+              usecase: context.read<CheckExistingConversationUsecase>(),
             ),
           );
         },
@@ -203,10 +171,8 @@ GoRouter router(SessionListenable sessionListenable) {
               return BlocProvider(
                 create:
                     (context) => MessageScreenCubit(
-                      getConversationListUseCase: GetConversationListUsecase(
-                        conversationRepository: context.read(),
-                        sessionProvider: context.read(),
-                      ),
+                      getConversationListUseCase:
+                          context.read<GetConversationListUsecase>(),
                     )..fetchConversations(),
                 child: MessageScreen(),
               );
@@ -227,18 +193,13 @@ GoRouter router(SessionListenable sessionListenable) {
                   BlocProvider(
                     create:
                         (context) => UserCubit(
-                          getUserUseCase: GetUserUseCase(
-                            sessionProvider: context.read(),
-                          ),
+                          getUserUseCase: context.read<GetUserUseCase>(),
                         )..fetchUser(),
                   ),
                   BlocProvider(
                     create:
                         (context) => LogoutCubit(
-                          logoutUseCase: LogoutUsecase(
-                            authRepository: context.read(),
-                            sessionProvider: context.read(),
-                          ),
+                          logoutUseCase: context.read<LogoutUseCase>(),
                         ),
                   ),
                 ],

@@ -4,11 +4,11 @@ import 'package:project_collaboration_app/utils/result.dart';
 import 'package:project_collaboration_app/utils/ui_state.dart';
 
 class LogoutCubit extends Cubit<VoidUiState> {
-  LogoutCubit({required LogoutUsecase logoutUseCase})
+  LogoutCubit({required LogoutUseCase logoutUseCase})
     : _logoutUseCase = logoutUseCase,
       super(VoidUiState.idle());
 
-  final LogoutUsecase _logoutUseCase;
+  final LogoutUseCase _logoutUseCase;
 
   Future<void> logout() async {
     emit(VoidUiState.loading());
