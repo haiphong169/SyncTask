@@ -36,7 +36,7 @@ class SignInWithGoogleUseCase {
     final user = User(
       uid: uid,
       username: displayName,
-      avatar: AvatarGenerator.generateDefaultAvatar(displayName).toEntity(),
+      avatar: AvatarGenerator.generateDefaultAvatar(displayName),
     );
 
     final createUserResult = await _userRepository.createUser(user);

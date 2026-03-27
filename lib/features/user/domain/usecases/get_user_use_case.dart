@@ -9,7 +9,7 @@ class GetUserUseCase {
   GetUserUseCase({required SessionProvider sessionProvider})
     : _session = sessionProvider;
 
-  Future<Result<User>> getCurrentUser() async {
+  Result<User> call() {
     final result = _session.user;
     if (result != null) {
       return Result.ok(result);

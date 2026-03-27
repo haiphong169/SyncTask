@@ -11,9 +11,8 @@ class UserCubit extends Cubit<UiState<User>> {
     : _getUserUseCase = getUserUseCase,
       super(UiState<User>.idle());
 
-  Future<void> fetchUser() async {
-    emit(UiState.loading());
-    final result = await _getUserUseCase.getCurrentUser();
+  void fetchUser() {
+    final result = _getUserUseCase();
     switch (result) {
       case Ok<User>():
         emit(UiState.success(result.data));

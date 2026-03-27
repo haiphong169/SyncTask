@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:project_collaboration_app/features/user/data/models/user_model.dart';
+import 'package:project_collaboration_app/features/user/domain/entities/user.dart';
 
 class AvatarGenerator {
   static int _generateAvatarColorValue() {
@@ -29,12 +29,12 @@ class AvatarGenerator {
     return username[0] + randomChar;
   }
 
-  static AvatarModel generateDefaultAvatar(String username) {
+  static Avatar generateDefaultAvatar(String username) {
     final backgroundColorValue = _generateAvatarColorValue();
     final textColorValue = _getTextColorValue(backgroundColorValue);
     final initials = _pickInitialsFromUsername(username);
 
-    return AvatarModel(
+    return Avatar(
       backgroundColorValue: backgroundColorValue,
       textColorValue: textColorValue,
       initials: initials,

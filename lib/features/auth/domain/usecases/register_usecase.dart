@@ -35,7 +35,7 @@ class RegisterUseCase {
     final user = User(
       uid: uid,
       username: username,
-      avatar: AvatarGenerator.generateDefaultAvatar(username).toEntity(),
+      avatar: AvatarGenerator.generateDefaultAvatar(username),
     );
     final createUserResult = await _userRepository.createUser(user);
     if (createUserResult is Failure<void>) {
