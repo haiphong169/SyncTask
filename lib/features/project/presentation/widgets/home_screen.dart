@@ -13,17 +13,29 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.only(top: 24, left: 12, right: 12),
-        child: Center(
-          child: BlocBuilder<HomeScreenCubit, UiState<List<Project>>>(
-            builder:
-                (context, state) => switch (state) {
-                  Success(:final data) => _buildProjectList(data),
-                  Loading() => CircularProgressIndicator(),
-                  Error(:final message) => Text(message),
-                  _ => SizedBox(),
-                },
-          ),
+        padding: const EdgeInsets.only(top: 100, left: 12, right: 12),
+        child: BlocBuilder<HomeScreenCubit, UiState<List<Project>>>(
+          builder:
+              (context, state) => switch (state) {
+                Success(:final data) => Container(
+                  decoration: BoxDecoration(
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 8,
+                      right: 8,
+                      bottom: 100,
+                    ),
+                    child: _buildProjectList(data),
+                  ),
+                ),
+                Loading() => CircularProgressIndicator(),
+                Error(:final message) => Text(message),
+                _ => SizedBox(),
+              },
         ),
       ),
       floatingActionButton: ElevatedButton(
@@ -31,7 +43,7 @@ class HomeScreen extends StatelessWidget {
           context.push(Routes.addProject);
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          padding: const EdgeInsets.all(4),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -48,14 +60,30 @@ class HomeScreen extends StatelessWidget {
   Widget _buildProjectList(List<Project> data) {
     if (data.isEmpty) return SizedBox();
     return ListView.builder(
+      shrinkWrap: true,
       itemCount: data.length,
-      itemBuilder:
-          (context, index) => ListTile(
-            title: Text(data[index].name),
+      itemBuilder: (context, index) {
+        final theme = Theme.of(context);
+        final project = data[index];
+        return Card(
+          color: theme.colorScheme.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: theme.colorScheme.outlineVariant),
+          ),
+          child: ListTile(
+            leading: Container(
+              height: 30,
+              width: 50,
+              color: Color(project.backgroundColorValue),
+            ),
+            title: Text(data[index].name, style: theme.textTheme.titleMedium),
             onTap: () {
               context.push(Routes.projectWithId(data[index].uid));
             },
           ),
+        );
+      },
     );
   }
 }
