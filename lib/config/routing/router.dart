@@ -15,6 +15,12 @@ import 'package:project_collaboration_app/features/messaging/presentation/bloc/m
 import 'package:project_collaboration_app/features/messaging/presentation/widgets/conversation_screen.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/widgets/message_screen.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/widgets/mock_conversation_screen.dart';
+import 'package:project_collaboration_app/features/project/presentation/bloc/add_project_cubit.dart';
+import 'package:project_collaboration_app/features/project/presentation/bloc/home_screen_cubit.dart';
+import 'package:project_collaboration_app/features/project/presentation/bloc/project_screen_cubit.dart';
+import 'package:project_collaboration_app/features/project/presentation/widgets/add_project_screen.dart';
+import 'package:project_collaboration_app/features/project/presentation/widgets/home_screen.dart';
+import 'package:project_collaboration_app/features/project/presentation/widgets/project_screen.dart';
 import 'package:project_collaboration_app/features/user/domain/usecases/get_user_use_case.dart';
 import 'package:project_collaboration_app/features/auth/domain/usecases/login_usecase.dart';
 import 'package:project_collaboration_app/features/auth/domain/usecases/logout_usecase.dart';
@@ -85,16 +91,27 @@ GoRouter router(SessionListenable sessionListenable) {
       GoRoute(
         path: Routes.addProject,
         builder: (context, state) {
-          // todo update
-          return Placeholder();
+          return BlocProvider(
+            create:
+                (context) => AddProjectCubit(addProjectUseCase: context.read()),
+            child: AddProjectScreen(),
+          );
         },
       ),
       GoRoute(
         path: '${Routes.project}/:id',
         builder: (context, state) {
           final id = state.pathParameters['id']!;
-          // TODO update
-          return Placeholder();
+          return BlocProvider(
+            create:
+                (context) => ProjectScreenCubit(
+                  getTaskListUseCase: context.read(),
+                  addTaskListUseCase: context.read(),
+                  deleteTaskListUseCase: context.read(),
+                  projectUid: id,
+                ),
+            child: ProjectScreen(),
+          );
         },
       ),
       GoRoute(
@@ -161,8 +178,13 @@ GoRouter router(SessionListenable sessionListenable) {
           GoRoute(
             path: Routes.home,
             builder: (context, state) {
-              // TODO update
-              return Placeholder();
+              return BlocProvider(
+                create:
+                    (context) =>
+                        HomeScreenCubit(getProjectsUseCase: context.read())
+                          ..fetchProjects(),
+                child: HomeScreen(),
+              );
             },
           ),
           GoRoute(

@@ -11,6 +11,17 @@ import 'package:project_collaboration_app/features/messaging/domain/usecases/che
 import 'package:project_collaboration_app/features/messaging/domain/usecases/get_conversation_list_usecase.dart';
 import 'package:project_collaboration_app/features/messaging/domain/usecases/get_conversation_messages_usecase.dart';
 import 'package:project_collaboration_app/features/messaging/domain/usecases/send_message_usecase.dart';
+import 'package:project_collaboration_app/features/project/data/data_sources/project_remote_data_source.dart';
+import 'package:project_collaboration_app/features/project/data/data_sources/task_list_remote_data_source.dart';
+import 'package:project_collaboration_app/features/project/data/repositories/project_repository_impl.dart';
+import 'package:project_collaboration_app/features/project/data/repositories/task_list_repository_impl.dart';
+import 'package:project_collaboration_app/features/project/domain/repositories/project_repository.dart';
+import 'package:project_collaboration_app/features/project/domain/repositories/task_list_repository.dart';
+import 'package:project_collaboration_app/features/project/domain/usecases/project/add_project_usecase.dart';
+import 'package:project_collaboration_app/features/project/domain/usecases/project/get_projects_usecase.dart';
+import 'package:project_collaboration_app/features/project/domain/usecases/task_list/add_task_list_usecase.dart';
+import 'package:project_collaboration_app/features/project/domain/usecases/task_list/delete_task_list_usecase.dart';
+import 'package:project_collaboration_app/features/project/domain/usecases/task_list/get_task_lists_usecase.dart';
 import 'package:project_collaboration_app/features/user/domain/usecases/search_user_use_case.dart';
 import 'package:project_collaboration_app/features/user/domain/usecases/get_user_use_case.dart';
 import 'package:project_collaboration_app/features/messaging/data/data_sources/conversation_remote_data_source.dart';
@@ -28,6 +39,7 @@ import 'package:project_collaboration_app/features/user/data/repositories/user_r
 import 'package:project_collaboration_app/features/user/domain/repositories/user_repository.dart';
 
 final repositoryProviders = [
+  // data sources
   RepositoryProvider<AuthRemoteDataSource>(
     create: (context) => AuthRemoteDataSource(),
   ),
@@ -43,7 +55,14 @@ final repositoryProviders = [
   RepositoryProvider<MessageRemoteDataSource>(
     create: (context) => MessageRemoteDataSource(),
   ),
+  RepositoryProvider<ProjectRemoteDataSource>(
+    create: (context) => ProjectRemoteDataSource(),
+  ),
+  RepositoryProvider<TaskListRemoteDataSource>(
+    create: (context) => TaskListRemoteDataSource(),
+  ),
 
+  // repositories
   RepositoryProvider<AuthRepository>(
     create:
         (context) => AuthRepositoryImpl(
@@ -77,6 +96,18 @@ final repositoryProviders = [
           messageRemoteDataSource: context.read<MessageRemoteDataSource>(),
         ),
   ),
+  RepositoryProvider<ProjectRepository>(
+    create:
+        (context) =>
+            ProjectRepositoryImpl(projectRemoteDataSource: context.read()),
+  ),
+  RepositoryProvider<TaskListRepository>(
+    create:
+        (context) =>
+            TaskListRepositoryImpl(taskListRemoteDataSource: context.read()),
+  ),
+
+  // use cases
   RepositoryProvider<LoginUseCase>(
     create:
         (context) => LoginUseCase(
@@ -152,6 +183,38 @@ final repositoryProviders = [
         (context) => CheckExistingConversationUsecase(
           conversationRepository: context.read<ConversationRepository>(),
           sessionProvider: context.read<SessionProvider>(),
+        ),
+  ),
+  RepositoryProvider<GetProjectsUseCase>(
+    create:
+        (context) => GetProjectsUseCase(
+          projectRepository: context.read<ProjectRepository>(),
+          sessionProvider: context.read<SessionProvider>(),
+        ),
+  ),
+  RepositoryProvider<AddProjectUseCase>(
+    create:
+        (context) => AddProjectUseCase(
+          projectRepository: context.read<ProjectRepository>(),
+          sessionProvider: context.read<SessionProvider>(),
+        ),
+  ),
+  RepositoryProvider(
+    create:
+        (context) => GetTaskListsUseCase(
+          taskListRepository: context.read<TaskListRepository>(),
+        ),
+  ),
+  RepositoryProvider(
+    create:
+        (context) => AddTaskListUseCase(
+          taskListRepository: context.read<TaskListRepository>(),
+        ),
+  ),
+  RepositoryProvider(
+    create:
+        (context) => DeleteTaskListUseCase(
+          taskListRepository: context.read<TaskListRepository>(),
         ),
   ),
 ];

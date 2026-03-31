@@ -2,6 +2,12 @@ import 'package:project_collaboration_app/features/messaging/data/models/convers
 import 'package:project_collaboration_app/features/messaging/data/models/message_model.dart';
 import 'package:project_collaboration_app/features/messaging/domain/entities/conversation.dart';
 import 'package:project_collaboration_app/features/messaging/domain/entities/message.dart';
+import 'package:project_collaboration_app/features/project/data/models/project_model.dart';
+import 'package:project_collaboration_app/features/project/data/models/task_list_model.dart';
+import 'package:project_collaboration_app/features/project/data/models/task_model.dart';
+import 'package:project_collaboration_app/features/project/domain/entities/project.dart';
+import 'package:project_collaboration_app/features/project/domain/entities/task.dart';
+import 'package:project_collaboration_app/features/project/domain/entities/task_list.dart';
 import 'package:project_collaboration_app/features/user/data/models/user_model.dart';
 import 'package:project_collaboration_app/features/user/domain/entities/user.dart';
 
@@ -41,6 +47,35 @@ extension ConversationMapper on Conversation {
       lastMessage: lastMessage,
       lastMessageAt: lastMessageAt,
       lastMessageSenderUid: lastMessageSenderUid,
+    );
+  }
+}
+
+extension ProjectMapper on Project {
+  ProjectModel toModel() {
+    return ProjectModel(
+      uid: uid,
+      name: name,
+      backgroundColorValue: backgroundColorValue,
+      members: members,
+    );
+  }
+}
+
+extension TaskListMapper on TaskList {
+  TaskListModel toModel() {
+    return TaskListModel(uid: uid, projectUid: projectUid, name: name);
+  }
+}
+
+extension TaskMapper on Task {
+  TaskModel toModel() {
+    return TaskModel(
+      uid: uid,
+      taskListUid: taskListUid,
+      projectUid: projectUid,
+      name: name,
+      isCompleted: isCompleted,
     );
   }
 }
