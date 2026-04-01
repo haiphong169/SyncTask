@@ -103,6 +103,10 @@ GoRouter router(SessionListenable sessionListenable) {
         path: '${Routes.project}/:id',
         builder: (context, state) {
           final id = state.pathParameters['id']!;
+          final extra =
+              GoRouterState.of(context).extra! as Map<String, dynamic>;
+          final projectName = extra['projectName'] as String;
+          final backgroundColorValue = extra['backgroundColorValue'] as int;
           return BlocProvider(
             create:
                 (context) => ProjectScreenCubit(
@@ -110,8 +114,11 @@ GoRouter router(SessionListenable sessionListenable) {
                   addTaskListUseCase: context.read(),
                   deleteTaskListUseCase: context.read(),
                   projectUid: id,
-                ),
-            child: ProjectScreen(),
+                )..fetchTaskLists(),
+            child: ProjectScreen(
+              projectName: projectName,
+              backgroundColorValue: backgroundColorValue,
+            ),
           );
         },
       ),

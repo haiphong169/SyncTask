@@ -29,7 +29,17 @@ class HomeScreen extends StatelessWidget {
                       right: 8,
                       bottom: 100,
                     ),
-                    child: _buildProjectList(data),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: 16),
+                        Text(
+                          'Projects',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        _buildProjectList(data),
+                      ],
+                    ),
                   ),
                 ),
                 Loading() => CircularProgressIndicator(),
@@ -79,7 +89,13 @@ class HomeScreen extends StatelessWidget {
             ),
             title: Text(data[index].name, style: theme.textTheme.titleMedium),
             onTap: () {
-              context.push(Routes.projectWithId(data[index].uid));
+              context.push(
+                Routes.projectWithId(project.uid),
+                extra: {
+                  'projectName': project.name,
+                  'backgroundColorValue': project.backgroundColorValue,
+                },
+              );
             },
           ),
         );

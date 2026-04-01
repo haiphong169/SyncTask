@@ -199,19 +199,19 @@ final repositoryProviders = [
           sessionProvider: context.read<SessionProvider>(),
         ),
   ),
-  RepositoryProvider(
+  RepositoryProvider<GetTaskListsUseCase>(
     create:
         (context) => GetTaskListsUseCase(
           taskListRepository: context.read<TaskListRepository>(),
         ),
   ),
-  RepositoryProvider(
+  RepositoryProvider<AddTaskListUseCase>(
     create:
         (context) => AddTaskListUseCase(
           taskListRepository: context.read<TaskListRepository>(),
         ),
   ),
-  RepositoryProvider(
+  RepositoryProvider<DeleteTaskListUseCase>(
     create:
         (context) => DeleteTaskListUseCase(
           taskListRepository: context.read<TaskListRepository>(),
