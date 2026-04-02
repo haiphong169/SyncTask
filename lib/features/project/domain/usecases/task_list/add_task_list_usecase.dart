@@ -13,6 +13,7 @@ class AddTaskListUseCase {
       uid: Uuid().v4(),
       projectUid: projectUid,
       name: name,
+      taskHeaders: [],
     );
     return _taskListRepository.createTaskList(taskList);
   }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_collaboration_app/features/project/domain/entities/task_list.dart';
+import 'package:project_collaboration_app/features/project/domain/usecases/task/add_task_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task_list/add_task_list_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task_list/delete_task_list_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task_list/get_task_lists_usecase.dart';
@@ -12,15 +13,18 @@ class ProjectScreenCubit extends Cubit<UiState<List<TaskList>>> {
     required GetTaskListsUseCase getTaskListUseCase,
     required AddTaskListUseCase addTaskListUseCase,
     required DeleteTaskListUseCase deleteTaskListUseCase,
+    required AddTaskUseCase addTaskUseCase,
     required this.projectUid,
   }) : _getTaskList = getTaskListUseCase,
        _addTaskList = addTaskListUseCase,
        _deleteTaskList = deleteTaskListUseCase,
+       _addTask = addTaskUseCase,
        super(UiState.idle());
 
   final GetTaskListsUseCase _getTaskList;
   final AddTaskListUseCase _addTaskList;
   final DeleteTaskListUseCase _deleteTaskList;
+  final AddTaskUseCase _addTask;
   StreamSubscription? _taskListSubscription;
   final String projectUid;
 
@@ -49,6 +53,14 @@ class ProjectScreenCubit extends Cubit<UiState<List<TaskList>>> {
   void deleteTaskList(String taskListUid) {
     try {
       _deleteTaskList(taskListUid, projectUid);
+    } on Exception catch (e) {
+      emit(UiState.error(e.toString()));
+    }
+  }
+
+  void addTask(String taskListUid, List<TaskHeader> headers, String name) {
+    try {
+      _addTask(projectUid, taskListUid, headers, name);
     } on Exception catch (e) {
       emit(UiState.error(e.toString()));
     }

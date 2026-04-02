@@ -13,12 +13,16 @@ import 'package:project_collaboration_app/features/messaging/domain/usecases/get
 import 'package:project_collaboration_app/features/messaging/domain/usecases/send_message_usecase.dart';
 import 'package:project_collaboration_app/features/project/data/data_sources/project_remote_data_source.dart';
 import 'package:project_collaboration_app/features/project/data/data_sources/task_list_remote_data_source.dart';
+import 'package:project_collaboration_app/features/project/data/data_sources/task_remote_data_source.dart';
 import 'package:project_collaboration_app/features/project/data/repositories/project_repository_impl.dart';
 import 'package:project_collaboration_app/features/project/data/repositories/task_list_repository_impl.dart';
+import 'package:project_collaboration_app/features/project/data/repositories/task_repository_impl.dart';
 import 'package:project_collaboration_app/features/project/domain/repositories/project_repository.dart';
 import 'package:project_collaboration_app/features/project/domain/repositories/task_list_repository.dart';
+import 'package:project_collaboration_app/features/project/domain/repositories/task_repository.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/project/add_project_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/project/get_projects_usecase.dart';
+import 'package:project_collaboration_app/features/project/domain/usecases/task/add_task_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task_list/add_task_list_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task_list/delete_task_list_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task_list/get_task_lists_usecase.dart';
@@ -60,6 +64,9 @@ final repositoryProviders = [
   ),
   RepositoryProvider<TaskListRemoteDataSource>(
     create: (context) => TaskListRemoteDataSource(),
+  ),
+  RepositoryProvider<TaskRemoteDataSource>(
+    create: (context) => TaskRemoteDataSource(),
   ),
 
   // repositories
@@ -105,6 +112,10 @@ final repositoryProviders = [
     create:
         (context) =>
             TaskListRepositoryImpl(taskListRemoteDataSource: context.read()),
+  ),
+  RepositoryProvider<TaskRepository>(
+    create:
+        (context) => TaskRepositoryImpl(taskRemoteDataSource: context.read()),
   ),
 
   // use cases
@@ -214,6 +225,13 @@ final repositoryProviders = [
   RepositoryProvider<DeleteTaskListUseCase>(
     create:
         (context) => DeleteTaskListUseCase(
+          taskListRepository: context.read<TaskListRepository>(),
+        ),
+  ),
+  RepositoryProvider<AddTaskUseCase>(
+    create:
+        (context) => AddTaskUseCase(
+          taskRepository: context.read<TaskRepository>(),
           taskListRepository: context.read<TaskListRepository>(),
         ),
   ),

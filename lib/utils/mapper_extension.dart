@@ -64,7 +64,18 @@ extension ProjectMapper on Project {
 
 extension TaskListMapper on TaskList {
   TaskListModel toModel() {
-    return TaskListModel(uid: uid, projectUid: projectUid, name: name);
+    return TaskListModel(
+      uid: uid,
+      projectUid: projectUid,
+      name: name,
+      taskHeaders: taskHeaders.map((header) => header.toModel()).toList(),
+    );
+  }
+}
+
+extension TaskHeaderMapper on TaskHeader {
+  TaskHeaderModel toModel() {
+    return TaskHeaderModel(uid: uid, name: name, isCompleted: isCompleted);
   }
 }
 

@@ -30,8 +30,15 @@ class TaskListRepositoryImpl implements TaskListRepository {
   }
 
   @override
-  Future<void> updateTaskList(TaskList newTaskList) {
-    // TODO: implement updateTaskList
-    throw UnimplementedError();
+  Future<void> updateTaskList(
+    String projectUid,
+    String taskListUid,
+    List<TaskHeader> newHeaders,
+  ) {
+    return _taskListRemoteDataSource.updateTaskList(
+      projectUid,
+      taskListUid,
+      newHeaders.map((header) => header.toModel()).toList(),
+    );
   }
 }

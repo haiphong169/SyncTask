@@ -38,4 +38,19 @@ class TaskListRemoteDataSource {
         .doc(taskListUid)
         .delete();
   }
+
+  Future<void> updateTaskList(
+    String projectUid,
+    String taskListUid,
+    List<TaskHeaderModel> newHeaders,
+  ) {
+    return _db
+        .collection(_projectCollection)
+        .doc(projectUid)
+        .collection(_taskListCollection)
+        .doc(taskListUid)
+        .update({
+          'taskHeaders': newHeaders.map((header) => header.toJson()).toList(),
+        });
+  }
 }

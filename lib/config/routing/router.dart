@@ -113,6 +113,7 @@ GoRouter router(SessionListenable sessionListenable) {
                   getTaskListUseCase: context.read(),
                   addTaskListUseCase: context.read(),
                   deleteTaskListUseCase: context.read(),
+                  addTaskUseCase: context.read(),
                   projectUid: id,
                 )..fetchTaskLists(),
             child: ProjectScreen(
