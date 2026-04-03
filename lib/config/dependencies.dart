@@ -193,9 +193,9 @@ final repositoryProviders = [
           sessionProvider: context.read<SessionProvider>(),
         ),
   ),
-  RepositoryProvider<CheckExistingConversationUsecase>(
+  RepositoryProvider<CheckExistingConversationUseCase>(
     create:
-        (context) => CheckExistingConversationUsecase(
+        (context) => CheckExistingConversationUseCase(
           conversationRepository: context.read<ConversationRepository>(),
           sessionProvider: context.read<SessionProvider>(),
         ),

@@ -29,50 +29,54 @@ class _MockConversationScreenState extends State<MockConversationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: BlocBuilder<MockConversationBloc, ChatState>(
-          builder: (context, state) {
-            return Column(
-              children: [
-                Expanded(
-                  child: switch (state) {
-                    ChatEmpty() => Center(
-                      child: Text('Send a message to start the conversation'),
-                    ),
-                    ChatError(:final error) => Center(child: Text(error)),
-                    ChatLoading() => Center(child: CircularProgressIndicator()),
-                    ChatReady(:final messages) => ListView.builder(
-                      itemCount: messages.length,
-                      itemBuilder:
-                          (context, index) => Text(messages[index].text),
-                    ),
-                    _ => SizedBox(),
-                  },
-                ),
-                SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(child: TextField(controller: _controller)),
-                    IconButton(
-                      onPressed: () {
-                        if (state is ChatEmpty) {
-                          context.read<MockConversationBloc>().add(
-                            ConversationCreated(_controller.text),
-                          );
-                        } else if (state is ChatReady) {
-                          context.read<MockConversationBloc>().add(
-                            MessageSent(_controller.text),
-                          );
-                        }
-                        _controller.clear();
-                      },
-                      icon: Icon(Icons.send),
-                    ),
-                  ],
-                ),
-              ],
-            );
-          },
+      body: SafeArea(
+        child: Center(
+          child: BlocBuilder<MockConversationBloc, ChatState>(
+            builder: (context, state) {
+              return Column(
+                children: [
+                  Expanded(
+                    child: switch (state) {
+                      ChatEmpty() => Center(
+                        child: Text('Send a message to start the conversation'),
+                      ),
+                      ChatError(:final error) => Center(child: Text(error)),
+                      ChatLoading() => Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      ChatReady(:final messages) => ListView.builder(
+                        itemCount: messages.length,
+                        itemBuilder:
+                            (context, index) => Text(messages[index].text),
+                      ),
+                      _ => SizedBox(),
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(child: TextField(controller: _controller)),
+                      IconButton(
+                        onPressed: () {
+                          if (state is ChatEmpty) {
+                            context.read<MockConversationBloc>().add(
+                              ConversationCreated(_controller.text),
+                            );
+                          } else if (state is ChatReady) {
+                            context.read<MockConversationBloc>().add(
+                              MessageSent(_controller.text),
+                            );
+                          }
+                          _controller.clear();
+                        },
+                        icon: Icon(Icons.send),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

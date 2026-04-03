@@ -29,38 +29,41 @@ class _ConversationScreenState extends State<ConversationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          children: [
-            Expanded(
-              child: BlocBuilder<ConversationCubit, ConversationState>(
-                builder:
-                    (context, state) => switch (state) {
-                      Success<List<Message>>(:final data) => ListView.builder(
-                        itemCount: data.length,
-                        itemBuilder: (context, index) => Text(data[index].text),
-                      ),
-                      _ => SizedBox(),
-                    },
-              ),
-            ),
-            SizedBox(height: 16),
-            // input field
-            Row(
-              children: [
-                Expanded(child: TextField(controller: _controller)),
-                IconButton(
-                  onPressed: () {
-                    context.read<ConversationCubit>().sendMessage(
-                      _controller.text,
-                    );
-                    _controller.clear();
-                  },
-                  icon: Icon(Icons.send),
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            children: [
+              Expanded(
+                child: BlocBuilder<ConversationCubit, ConversationState>(
+                  builder:
+                      (context, state) => switch (state) {
+                        Success<List<Message>>(:final data) => ListView.builder(
+                          itemCount: data.length,
+                          itemBuilder:
+                              (context, index) => Text(data[index].text),
+                        ),
+                        _ => SizedBox(),
+                      },
                 ),
-              ],
-            ),
-          ],
+              ),
+              SizedBox(height: 16),
+              // input field
+              Row(
+                children: [
+                  Expanded(child: TextField(controller: _controller)),
+                  IconButton(
+                    onPressed: () {
+                      context.read<ConversationCubit>().sendMessage(
+                        _controller.text,
+                      );
+                      _controller.clear();
+                    },
+                    icon: Icon(Icons.send),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

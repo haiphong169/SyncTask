@@ -17,6 +17,7 @@ class UserSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: textController,
       focusNode: focusNode,
       decoration: InputDecoration(
         hintText: 'Search users...',

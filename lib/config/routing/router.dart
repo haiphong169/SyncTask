@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:project_collaboration_app/features/auth/domain/repositories/session_provider.dart';
 import 'package:project_collaboration_app/features/inbox/presentation/widgets/inbox_screen.dart';
 import 'package:project_collaboration_app/features/messaging/domain/usecases/conversation/add_conversation_usecase.dart';
-import 'package:project_collaboration_app/features/messaging/domain/usecases/conversation/check_existing_conversation_usecase.dart';
 import 'package:project_collaboration_app/features/messaging/domain/usecases/conversation/get_conversation_list_usecase.dart';
 import 'package:project_collaboration_app/features/messaging/domain/usecases/message/get_conversation_messages_usecase.dart';
 import 'package:project_collaboration_app/features/messaging/domain/usecases/message/send_message_usecase.dart';
@@ -203,11 +202,10 @@ GoRouter router(SessionListenable sessionListenable) {
             create:
                 (context) => SearchUserBloc(
                   searchUserUseCase: context.read<SearchUserUseCase>(),
+                  checkExistingConversationUseCase: context.read(),
+                  origin: origin,
                 ),
-            child: UserSearchScreen(
-              origin: origin,
-              usecase: context.read<CheckExistingConversationUsecase>(),
-            ),
+            child: UserSearchScreen(),
           );
         },
       ),

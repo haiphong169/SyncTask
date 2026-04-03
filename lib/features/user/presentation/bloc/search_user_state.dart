@@ -17,3 +17,8 @@ class SearchError extends SearchUserState {
   final String message;
   SearchError(this.message);
 }
+
+class OnNavigation extends SearchUserState {
+  final String route;
+  OnNavigation(this.route);
+}
