@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_collaboration_app/features/messaging/domain/entities/conversation.dart';
-import 'package:project_collaboration_app/features/messaging/domain/usecases/get_conversation_list_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/conversation/get_conversation_list_usecase.dart';
 import 'package:project_collaboration_app/utils/logger.dart';
 import 'package:project_collaboration_app/utils/result.dart';
 import 'package:project_collaboration_app/utils/ui_state.dart';

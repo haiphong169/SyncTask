@@ -16,8 +16,7 @@ class TaskRepositoryImpl implements TaskRepository {
 
   @override
   Future<void> deleteTask(String projectUid, String taskListUid, String uid) {
-    // TODO: implement deleteTask
-    throw UnimplementedError();
+    return _taskRemoteDataSource.deleteTask(projectUid, taskListUid, uid);
   }
 
   @override

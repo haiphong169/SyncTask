@@ -6,11 +6,11 @@ import 'package:project_collaboration_app/features/auth/domain/usecases/login_us
 import 'package:project_collaboration_app/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:project_collaboration_app/features/auth/domain/usecases/register_usecase.dart';
 import 'package:project_collaboration_app/features/auth/domain/usecases/sign_in_with_google_usecase.dart';
-import 'package:project_collaboration_app/features/messaging/domain/usecases/add_conversation_usecase.dart';
-import 'package:project_collaboration_app/features/messaging/domain/usecases/check_existing_conversation_usecase.dart';
-import 'package:project_collaboration_app/features/messaging/domain/usecases/get_conversation_list_usecase.dart';
-import 'package:project_collaboration_app/features/messaging/domain/usecases/get_conversation_messages_usecase.dart';
-import 'package:project_collaboration_app/features/messaging/domain/usecases/send_message_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/conversation/add_conversation_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/conversation/check_existing_conversation_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/conversation/get_conversation_list_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/message/get_conversation_messages_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/message/send_message_usecase.dart';
 import 'package:project_collaboration_app/features/project/data/data_sources/project_remote_data_source.dart';
 import 'package:project_collaboration_app/features/project/data/data_sources/task_list_remote_data_source.dart';
 import 'package:project_collaboration_app/features/project/data/data_sources/task_remote_data_source.dart';
@@ -24,6 +24,7 @@ import 'package:project_collaboration_app/features/project/domain/usecases/proje
 import 'package:project_collaboration_app/features/project/domain/usecases/project/get_projects_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task/add_task_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task/check_task_usecase.dart';
+import 'package:project_collaboration_app/features/project/domain/usecases/task/delete_task_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task/get_task_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task_list/add_task_list_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task_list/archive_task_list_usecase.dart';
@@ -251,6 +252,11 @@ final repositoryProviders = [
     create:
         (context) =>
             GetTaskUseCase(taskRepository: context.read<TaskRepository>()),
+  ),
+  RepositoryProvider<DeleteTaskUseCase>(
+    create:
+        (context) =>
+            DeleteTaskUseCase(taskRepository: context.read<TaskRepository>()),
   ),
 ];
 

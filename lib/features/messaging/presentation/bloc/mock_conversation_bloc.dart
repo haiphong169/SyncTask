@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_collaboration_app/features/messaging/domain/entities/message.dart';
-import 'package:project_collaboration_app/features/messaging/domain/usecases/add_conversation_usecase.dart';
-import 'package:project_collaboration_app/features/messaging/domain/usecases/send_message_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/conversation/add_conversation_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/message/send_message_usecase.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/bloc/chat_event.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/bloc/chat_state.dart';
 import 'package:project_collaboration_app/utils/result.dart';

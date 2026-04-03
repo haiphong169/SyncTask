@@ -41,6 +41,7 @@ class ProfileScreen extends StatelessWidget {
                     ],
                   ),
                   Idle<User>() => SizedBox(),
+                  _ => SizedBox(),
                 };
               },
             ),

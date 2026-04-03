@@ -9,6 +9,7 @@ sealed class UiState<T> {
   const factory UiState.success(T data) = Success._;
   const factory UiState.error(String message) = Error._;
   const factory UiState.idle() = Idle._;
+  const factory UiState.onNavigationPop() = OnNavigationPop._;
 }
 
 final class Loading<T> extends UiState<T> with EquatableMixin {
@@ -38,6 +39,13 @@ final class Error<T> extends UiState<T> with EquatableMixin {
 
 final class Idle<T> extends UiState<T> with EquatableMixin {
   const Idle._();
+
+  @override
+  List<Object?> get props => [];
+}
+
+final class OnNavigationPop<T> extends UiState<T> with EquatableMixin {
+  const OnNavigationPop._();
 
   @override
   List<Object?> get props => [];

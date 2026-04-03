@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_collaboration_app/features/project/domain/entities/task.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task/check_task_usecase.dart';
+import 'package:project_collaboration_app/features/project/domain/usecases/task/delete_task_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task/get_task_usecase.dart';
 import 'package:project_collaboration_app/utils/ui_state.dart';
 
@@ -8,15 +9,18 @@ class TaskCubit extends Cubit<UiState<Task>> {
   TaskCubit({
     required GetTaskUseCase getTaskUseCase,
     required CheckTaskUseCase checkTaskUseCase,
+    required DeleteTaskUseCase deleteTaskUseCase,
     required this.projectUid,
     required this.taskListUid,
     required this.taskUid,
   }) : _getTaskUseCase = getTaskUseCase,
        _checkTaskUseCase = checkTaskUseCase,
+       _deleteTaskUseCase = deleteTaskUseCase,
        super(UiState.idle());
 
   final GetTaskUseCase _getTaskUseCase;
   final CheckTaskUseCase _checkTaskUseCase;
+  final DeleteTaskUseCase _deleteTaskUseCase;
   final String projectUid;
   final String taskListUid;
   final String taskUid;
@@ -43,6 +47,16 @@ class TaskCubit extends Cubit<UiState<Task>> {
       await _checkTaskUseCase(projectUid, taskListUid, taskUid, newValue);
     } on Exception catch (e) {
       emit(previousState);
+      emit(UiState.error(e.toString()));
+    }
+  }
+
+  void deleteTask() async {
+    emit(UiState.loading());
+    try {
+      await _deleteTaskUseCase(projectUid, taskListUid, taskUid);
+      emit(UiState.onNavigationPop());
+    } on Exception catch (e) {
       emit(UiState.error(e.toString()));
     }
   }

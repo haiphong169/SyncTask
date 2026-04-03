@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_collaboration_app/config/routing/routes.dart';
-import 'package:project_collaboration_app/features/messaging/domain/usecases/check_existing_conversation_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/conversation/check_existing_conversation_usecase.dart';
 import 'package:project_collaboration_app/features/user/presentation/bloc/search_user_bloc.dart';
 import 'package:project_collaboration_app/features/user/presentation/bloc/search_user_event.dart';
 import 'package:project_collaboration_app/features/user/presentation/bloc/search_user_state.dart';

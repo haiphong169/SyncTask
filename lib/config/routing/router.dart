@@ -4,11 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_collaboration_app/features/auth/domain/repositories/session_provider.dart';
 import 'package:project_collaboration_app/features/inbox/presentation/widgets/inbox_screen.dart';
-import 'package:project_collaboration_app/features/messaging/domain/usecases/add_conversation_usecase.dart';
-import 'package:project_collaboration_app/features/messaging/domain/usecases/check_existing_conversation_usecase.dart';
-import 'package:project_collaboration_app/features/messaging/domain/usecases/get_conversation_list_usecase.dart';
-import 'package:project_collaboration_app/features/messaging/domain/usecases/get_conversation_messages_usecase.dart';
-import 'package:project_collaboration_app/features/messaging/domain/usecases/send_message_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/conversation/add_conversation_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/conversation/check_existing_conversation_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/conversation/get_conversation_list_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/message/get_conversation_messages_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/domain/usecases/message/send_message_usecase.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/bloc/conversation_cubit.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/bloc/message_screen_cubit.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/bloc/mock_conversation_bloc.dart';
@@ -154,6 +154,7 @@ GoRouter router(SessionListenable sessionListenable) {
                 (context) => TaskCubit(
                   getTaskUseCase: context.read(),
                   checkTaskUseCase: context.read(),
+                  deleteTaskUseCase: context.read(),
                   projectUid: extra['projectUid'] as String,
                   taskListUid: extra['taskListUid'] as String,
                   taskUid: taskId,

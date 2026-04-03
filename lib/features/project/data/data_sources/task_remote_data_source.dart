@@ -78,4 +78,25 @@ class TaskRemoteDataSource {
       projectUid,
     );
   }
+
+  Future<void> deleteTask(
+    String projectUid,
+    String taskListUid,
+    String taskUid,
+  ) async {
+    final batch = _db.batch();
+
+    final taskListRef = _db
+        .collection(FirebasePath.projects)
+        .doc(projectUid)
+        .collection(FirebasePath.taskLists)
+        .doc(taskListUid);
+
+    final taskRef = taskListRef.collection(FirebasePath.tasks).doc(taskUid);
+
+    batch.delete(taskRef);
+    batch.update(taskListRef, {'taskHeaders.$taskUid': FieldValue.delete()});
+
+    return batch.commit();
+  }
 }
