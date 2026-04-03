@@ -208,7 +208,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                         style: theme.textTheme.titleMedium,
                       ),
                     ),
-                    IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+                    _taskListOptionsButton(taskList),
                   ],
                 ),
                 taskList.taskHeaders.isEmpty
@@ -298,6 +298,27 @@ class _ProjectScreenState extends State<ProjectScreen> {
           Text(header.name),
         ],
       ),
+    );
+  }
+
+  Widget _taskListOptionsButton(TaskList taskList) {
+    return PopupMenuButton(
+      icon: Icon(Icons.more_vert),
+      onSelected: (value) {
+        switch (value) {
+          case 'delete':
+            context.read<ProjectScreenCubit>().deleteTaskList(taskList.uid);
+            break;
+          case 'archive':
+            // todo archive task list
+            break;
+        }
+      },
+      itemBuilder:
+          (context) => [
+            PopupMenuItem(value: 'delete', child: Text('Delete List')),
+            PopupMenuItem(value: 'archive', child: Text('Archive List')),
+          ],
     );
   }
 }

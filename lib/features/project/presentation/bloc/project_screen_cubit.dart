@@ -56,7 +56,7 @@ class ProjectScreenCubit extends Cubit<UiState<List<TaskList>>> {
 
   void deleteTaskList(String taskListUid) {
     try {
-      _deleteTaskList(taskListUid, projectUid);
+      _deleteTaskList(projectUid, taskListUid);
     } on Exception catch (e) {
       emit(UiState.error(e.toString()));
     }

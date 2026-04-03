@@ -29,7 +29,7 @@ class TaskListRemoteDataSource {
         .set(taskList.toJson());
   }
 
-  Future<void> deleteTaskList(String taskListUid, String projectUid) {
+  Future<void> deleteTaskList(String projectUid, String taskListUid) {
     return _db
         .collection(FirebasePath.projects)
         .doc(projectUid)

@@ -6,7 +6,7 @@ class DeleteTaskListUseCase {
   const DeleteTaskListUseCase({required TaskListRepository taskListRepository})
     : _taskListRepository = taskListRepository;
 
-  Future<void> call(String taskListUid, String projectUid) {
-    return _taskListRepository.deleteTaskList(taskListUid, projectUid);
+  Future<void> call(String projectUid, String tasklistUid) {
+    return _taskListRepository.deleteTaskList(projectUid, tasklistUid);
   }
 }

@@ -3,5 +3,5 @@ import 'package:project_collaboration_app/features/project/domain/entities/task_
 abstract class TaskListRepository {
   Stream<List<TaskList>> getTaskLists(String projectUid);
   Future<void> createTaskList(TaskList taskList);
-  Future<void> deleteTaskList(String taskListUid, String projectUid);
+  Future<void> deleteTaskList(String projectUid, String taskListUid);
 }

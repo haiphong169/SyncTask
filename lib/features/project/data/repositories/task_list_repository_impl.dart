@@ -16,8 +16,8 @@ class TaskListRepositoryImpl implements TaskListRepository {
   }
 
   @override
-  Future<void> deleteTaskList(String taskListUid, String projectUid) {
-    return _taskListRemoteDataSource.deleteTaskList(taskListUid, projectUid);
+  Future<void> deleteTaskList(String projectUid, String taskListUid) {
+    return _taskListRemoteDataSource.deleteTaskList(projectUid, taskListUid);
   }
 
   @override
