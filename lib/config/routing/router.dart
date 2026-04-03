@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -17,9 +16,11 @@ import 'package:project_collaboration_app/features/messaging/presentation/widget
 import 'package:project_collaboration_app/features/messaging/presentation/widgets/message_screen.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/widgets/mock_conversation_screen.dart';
 import 'package:project_collaboration_app/features/project/presentation/bloc/add_project_cubit.dart';
+import 'package:project_collaboration_app/features/project/presentation/bloc/archive_screen_cubit.dart';
 import 'package:project_collaboration_app/features/project/presentation/bloc/home_screen_cubit.dart';
 import 'package:project_collaboration_app/features/project/presentation/bloc/project_screen_cubit.dart';
 import 'package:project_collaboration_app/features/project/presentation/widgets/add_project_screen.dart';
+import 'package:project_collaboration_app/features/project/presentation/widgets/archive_screen.dart';
 import 'package:project_collaboration_app/features/project/presentation/widgets/home_screen.dart';
 import 'package:project_collaboration_app/features/project/presentation/widgets/project_screen.dart';
 import 'package:project_collaboration_app/features/user/domain/usecases/get_user_use_case.dart';
@@ -115,12 +116,28 @@ GoRouter router(SessionListenable sessionListenable) {
                   deleteTaskListUseCase: context.read(),
                   addTaskUseCase: context.read(),
                   checkTaskUseCase: context.read(),
+                  archiveTaskListUseCase: context.read(),
                   projectUid: id,
                 )..fetchTaskLists(),
             child: ProjectScreen(
               projectName: projectName,
               backgroundColorValue: backgroundColorValue,
             ),
+          );
+        },
+      ),
+      GoRoute(
+        path: '${Routes.archive}/:projectId',
+        builder: (context, state) {
+          final projectId = state.pathParameters['projectId']!;
+          return BlocProvider(
+            create:
+                (context) => ArchiveScreenCubit(
+                  getTaskListUseCase: context.read(),
+                  archiveTaskListUseCase: context.read(),
+                  projectUid: projectId,
+                )..fetchArchivedTaskLists(),
+            child: ArchiveScreen(backgroundColorValue: state.extra as int),
           );
         },
       ),

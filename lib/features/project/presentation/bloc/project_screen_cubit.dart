@@ -5,6 +5,7 @@ import 'package:project_collaboration_app/features/project/domain/entities/task_
 import 'package:project_collaboration_app/features/project/domain/usecases/task/add_task_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task/check_task_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task_list/add_task_list_usecase.dart';
+import 'package:project_collaboration_app/features/project/domain/usecases/task_list/archive_task_list_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task_list/delete_task_list_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task_list/get_task_lists_usecase.dart';
 import 'package:project_collaboration_app/utils/ui_state.dart';
@@ -16,12 +17,14 @@ class ProjectScreenCubit extends Cubit<UiState<List<TaskList>>> {
     required DeleteTaskListUseCase deleteTaskListUseCase,
     required AddTaskUseCase addTaskUseCase,
     required CheckTaskUseCase checkTaskUseCase,
+    required ArchiveTaskListUseCase archiveTaskListUseCase,
     required this.projectUid,
   }) : _getTaskList = getTaskListUseCase,
        _addTaskList = addTaskListUseCase,
        _deleteTaskList = deleteTaskListUseCase,
        _addTask = addTaskUseCase,
        _checkTask = checkTaskUseCase,
+       _archiveTaskList = archiveTaskListUseCase,
        super(UiState.idle());
 
   final GetTaskListsUseCase _getTaskList;
@@ -29,6 +32,7 @@ class ProjectScreenCubit extends Cubit<UiState<List<TaskList>>> {
   final DeleteTaskListUseCase _deleteTaskList;
   final AddTaskUseCase _addTask;
   final CheckTaskUseCase _checkTask;
+  final ArchiveTaskListUseCase _archiveTaskList;
   StreamSubscription? _taskListSubscription;
   final String projectUid;
 
@@ -38,7 +42,11 @@ class ProjectScreenCubit extends Cubit<UiState<List<TaskList>>> {
       final taskListsStream = _getTaskList(projectUid);
       _taskListSubscription?.cancel();
       _taskListSubscription = taskListsStream.listen(
-        (taskLists) => emit(UiState.success(taskLists)),
+        (taskLists) => emit(
+          UiState.success(
+            taskLists.where((taskList) => !taskList.isArchived).toList(),
+          ),
+        ),
         onError: (e) => emit(UiState.error(e.toString())),
       );
     } on Exception catch (e) {
@@ -73,6 +81,14 @@ class ProjectScreenCubit extends Cubit<UiState<List<TaskList>>> {
   void checkTask(String taskListUid, String taskUid, bool newValue) {
     try {
       _checkTask(projectUid, taskListUid, taskUid, newValue);
+    } on Exception catch (e) {
+      emit(UiState.error(e.toString()));
+    }
+  }
+
+  void archiveTaskList(String taskListUid) {
+    try {
+      _archiveTaskList(projectUid, taskListUid, true);
     } on Exception catch (e) {
       emit(UiState.error(e.toString()));
     }

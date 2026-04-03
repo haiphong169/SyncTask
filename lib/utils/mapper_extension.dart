@@ -68,6 +68,7 @@ extension TaskListMapper on TaskList {
       uid: uid,
       projectUid: projectUid,
       name: name,
+      isArchived: isArchived,
       taskHeaders: taskHeaders.map(
         (key, value) => MapEntry(key, value.toModel()),
       ),

@@ -12,12 +12,15 @@ class TaskListModel {
   @HiveField(2)
   final String name;
   @HiveField(3)
+  final bool isArchived;
+  @HiveField(4)
   final Map<String, TaskHeaderModel> taskHeaders;
 
   const TaskListModel({
     required this.uid,
     required this.projectUid,
     required this.name,
+    required this.isArchived,
     required this.taskHeaders,
   });
 
@@ -30,6 +33,7 @@ class TaskListModel {
       uid: uid,
       projectUid: projectUid,
       name: map['name'] as String,
+      isArchived: map['isArchived'] as bool,
       taskHeaders: (map['taskHeaders'] as Map<String, dynamic>).map(
         (key, value) => MapEntry(
           key,
@@ -42,6 +46,7 @@ class TaskListModel {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
+      'isArchived': isArchived,
       'taskHeaders': taskHeaders.map(
         (key, value) => MapEntry(key, value.toJson()),
       ),
@@ -53,6 +58,7 @@ class TaskListModel {
       uid: uid,
       projectUid: projectUid,
       name: name,
+      isArchived: isArchived,
       taskHeaders: taskHeaders.map(
         (key, value) => MapEntry(key, value.toEntity()),
       ),

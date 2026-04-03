@@ -20,14 +20,15 @@ class TaskListModelAdapter extends TypeAdapter<TaskListModel> {
       uid: fields[0] as String,
       projectUid: fields[1] as String,
       name: fields[2] as String,
-      taskHeaders: (fields[3] as Map).cast<String, TaskHeaderModel>(),
+      isArchived: fields[3] as bool,
+      taskHeaders: (fields[4] as Map).cast<String, TaskHeaderModel>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, TaskListModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.uid)
       ..writeByte(1)
@@ -35,6 +36,8 @@ class TaskListModelAdapter extends TypeAdapter<TaskListModel> {
       ..writeByte(2)
       ..write(obj.name)
       ..writeByte(3)
+      ..write(obj.isArchived)
+      ..writeByte(4)
       ..write(obj.taskHeaders);
   }
 

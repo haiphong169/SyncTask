@@ -26,4 +26,7 @@ abstract final class Routes {
   static const mockConversation = '/mockConversation';
   static String mockConversationWithId(String partnerUid) =>
       '$mockConversation/$partnerUid';
+
+  static const archive = '/archive';
+  static String archiveWithId(String projectId) => '$archive/$projectId';
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:project_collaboration_app/config/routing/routes.dart';
 import 'package:project_collaboration_app/features/project/domain/entities/task_list.dart';
 import 'package:project_collaboration_app/features/project/presentation/bloc/project_screen_cubit.dart';
 import 'package:project_collaboration_app/utils/ui_state.dart';
@@ -31,86 +33,96 @@ class _ProjectScreenState extends State<ProjectScreen> {
         widget.backgroundColorValue,
       ).withValues(alpha: 0.6),
       appBar: _appBar(),
-      body: BlocBuilder<ProjectScreenCubit, UiState<List<TaskList>>>(
-        builder: (context, state) {
-          switch (state) {
-            case Success(:final data):
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 16,
-                ),
-                child: SizedBox(
-                  height: double.infinity,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ..._buildTaskLists(data),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _isAddingNewTaskList = true;
-                            });
-                          },
-                          child: SizedBox(
-                            width: 250,
-                            height: 75,
-                            child: Card(
-                              color: Theme.of(context).colorScheme.surface,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                  child:
-                                      _isAddingNewTaskList
-                                          ? TextField(
-                                            decoration: InputDecoration(
-                                              fillColor:
-                                                  Theme.of(
-                                                    context,
-                                                  ).colorScheme.surface,
-                                              enabledBorder:
-                                                  UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      color: Colors.grey,
+      body: BlocListener<ProjectScreenCubit, UiState<List<TaskList>>>(
+        listener: (context, state) {
+          if (state is Error<List<TaskList>>) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        child: BlocBuilder<ProjectScreenCubit, UiState<List<TaskList>>>(
+          builder: (context, state) {
+            switch (state) {
+              case Success(:final data):
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 16,
+                  ),
+                  child: SizedBox(
+                    height: double.infinity,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ..._buildTaskLists(data),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _isAddingNewTaskList = true;
+                              });
+                            },
+                            child: SizedBox(
+                              width: 250,
+                              height: 75,
+                              child: Card(
+                                color: Theme.of(context).colorScheme.surface,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child:
+                                        _isAddingNewTaskList
+                                            ? TextField(
+                                              decoration: InputDecoration(
+                                                fillColor:
+                                                    Theme.of(
+                                                      context,
+                                                    ).colorScheme.surface,
+                                                enabledBorder:
+                                                    UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                        color: Colors.grey,
+                                                      ),
                                                     ),
-                                                  ),
-                                              focusedBorder:
-                                                  UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                      color: Colors.blue,
-                                                      width: 2,
+                                                focusedBorder:
+                                                    UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                        color: Colors.blue,
+                                                        width: 2,
+                                                      ),
                                                     ),
-                                                  ),
-                                              contentPadding: EdgeInsets.zero,
-                                              hintText: 'List name',
-                                            ),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                _newTaskListName = value;
-                                              });
-                                            },
-                                          )
-                                          : Icon(Icons.add),
+                                                contentPadding: EdgeInsets.zero,
+                                                hintText: 'List name',
+                                              ),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  _newTaskListName = value;
+                                                });
+                                              },
+                                            )
+                                            : Icon(Icons.add),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            case Loading():
-              return Center(child: CircularProgressIndicator());
-            case Error(:final message):
-              return Center(child: Text(message));
-            default:
-              return SizedBox();
-          }
-        },
+                );
+              case Loading():
+                return Center(child: CircularProgressIndicator());
+              default:
+                return SizedBox();
+            }
+          },
+        ),
       ),
     );
   }
@@ -182,6 +194,19 @@ class _ProjectScreenState extends State<ProjectScreen> {
       return AppBar(
         title: Text(widget.projectName),
         backgroundColor: Color(widget.backgroundColorValue),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.archive_outlined),
+            onPressed: () {
+              context.push(
+                Routes.archiveWithId(
+                  context.read<ProjectScreenCubit>().projectUid,
+                ),
+                extra: widget.backgroundColorValue,
+              );
+            },
+          ),
+        ],
       );
     }
   }
@@ -310,7 +335,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
             context.read<ProjectScreenCubit>().deleteTaskList(taskList.uid);
             break;
           case 'archive':
-            // todo archive task list
+            context.read<ProjectScreenCubit>().archiveTaskList(taskList.uid);
             break;
         }
       },
