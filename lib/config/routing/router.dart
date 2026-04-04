@@ -8,7 +8,8 @@ import 'package:project_collaboration_app/features/messaging/domain/usecases/con
 import 'package:project_collaboration_app/features/messaging/domain/usecases/conversation/get_conversation_list_usecase.dart';
 import 'package:project_collaboration_app/features/messaging/domain/usecases/message/get_conversation_messages_usecase.dart';
 import 'package:project_collaboration_app/features/messaging/domain/usecases/message/send_message_usecase.dart';
-import 'package:project_collaboration_app/features/messaging/presentation/bloc/conversation_cubit.dart';
+import 'package:project_collaboration_app/features/messaging/presentation/bloc/chat_event.dart';
+import 'package:project_collaboration_app/features/messaging/presentation/bloc/conversation_bloc.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/bloc/message_screen_cubit.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/bloc/mock_conversation_bloc.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/widgets/conversation_screen.dart';
@@ -184,12 +185,12 @@ GoRouter router(SessionListenable sessionListenable) {
           final conversationId = state.pathParameters['conversationId']!;
           return BlocProvider(
             create:
-                (context) => ConversationCubit(
+                (context) => ConversationBloc(
                   conversationId: conversationId,
                   getConversationMessagesUsecase:
                       context.read<GetConversationMessagesUsecase>(),
                   sendMessageUsecase: context.read<SendMessageUsecase>(),
-                )..fetchMessages(),
+                )..add(FetchMessages()),
             child: ConversationScreen(),
           );
         },

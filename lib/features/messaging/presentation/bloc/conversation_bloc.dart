@@ -4,42 +4,58 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_collaboration_app/features/messaging/domain/entities/message.dart';
 import 'package:project_collaboration_app/features/messaging/domain/usecases/message/get_conversation_messages_usecase.dart';
 import 'package:project_collaboration_app/features/messaging/domain/usecases/message/send_message_usecase.dart';
+import 'package:project_collaboration_app/features/messaging/presentation/bloc/chat_event.dart';
+import 'package:project_collaboration_app/features/messaging/presentation/bloc/chat_state.dart';
 import 'package:project_collaboration_app/utils/result.dart';
-import 'package:project_collaboration_app/utils/ui_state.dart';
 
-typedef ConversationState = UiState<List<Message>>;
-
-class ConversationCubit extends Cubit<ConversationState> {
-  ConversationCubit({
+class ConversationBloc extends Bloc<ChatEvent, ChatState> {
+  ConversationBloc({
     required this.conversationId,
     required GetConversationMessagesUsecase getConversationMessagesUsecase,
     required SendMessageUsecase sendMessageUsecase,
   }) : _getConversationMessagesUsecase = getConversationMessagesUsecase,
        _sendMessageUsecase = sendMessageUsecase,
-       super(ConversationState.idle());
+       super(const ChatEmpty()) {
+    on<FetchMessages>(_fetchMessages);
+
+    on<MessageSent>(_sendMessage);
+
+    on<MessageUpdated>(
+      (event, emit) => emit(ChatReady(messages: event.messages)),
+    );
+
+    on<MessageError>((event, emit) => emit(ChatError(event.message)));
+  }
 
   final GetConversationMessagesUsecase _getConversationMessagesUsecase;
   final SendMessageUsecase _sendMessageUsecase;
   StreamSubscription<List<Message>>? _subscription;
   final String conversationId;
 
-  Future<void> fetchMessages() async {
-    emit(ConversationState.loading());
+  Future<void> _fetchMessages(
+    FetchMessages event,
+    Emitter<ChatState> emit,
+  ) async {
+    emit(const ChatLoading());
     final result = await _getConversationMessagesUsecase(conversationId);
     switch (result) {
       case Ok<Stream<List<Message>>>():
         _subscription?.cancel();
         _subscription = result.data.listen(
-          (messages) => emit(ConversationState.success(messages)),
-          onError: (e) => emit(ConversationState.error(e.toString())),
+          (messages) => add(MessageUpdated(messages)),
+          onError: (e) => add(MessageError(e.toString())),
         );
       case Failure<Stream<List<Message>>>():
-        emit(ConversationState.error(result.error.message));
+        emit(ChatError(result.error.message));
     }
   }
 
-  Future<void> sendMessage(String messageText) {
-    return _sendMessageUsecase(messageText, conversationId);
+  Future<void> _sendMessage(MessageSent event, Emitter<ChatState> emit) async {
+    emit(const ChatLoading());
+    final result = await _sendMessageUsecase(event.text, conversationId);
+    if (result is Failure<void>) {
+      emit(ChatError(result.error.message));
+    }
   }
 
   @override

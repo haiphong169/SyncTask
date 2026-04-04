@@ -18,6 +18,7 @@ class HomeScreen extends StatelessWidget {
           builder:
               (context, state) => switch (state) {
                 Success(:final data) => Container(
+                  width: double.infinity,
                   decoration: BoxDecoration(
                     color:
                         Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -37,7 +38,15 @@ class HomeScreen extends StatelessWidget {
                           'Projects',
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        _buildProjectList(data),
+                        if (data.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 32),
+                            child: Text(
+                              'No projects yet. Create one to get started!',
+                            ),
+                          )
+                        else
+                          _buildProjectList(data),
                       ],
                     ),
                   ),
@@ -76,6 +85,7 @@ class HomeScreen extends StatelessWidget {
         final theme = Theme.of(context);
         final project = data[index];
         return Card(
+          margin: const EdgeInsets.symmetric(vertical: 8),
           color: theme.colorScheme.surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),

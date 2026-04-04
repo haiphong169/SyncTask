@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:project_collaboration_app/features/messaging/domain/entities/message.dart';
-import 'package:project_collaboration_app/features/messaging/presentation/bloc/conversation_cubit.dart';
-import 'package:project_collaboration_app/utils/ui_state.dart';
+import 'package:project_collaboration_app/features/messaging/presentation/bloc/chat_event.dart';
+import 'package:project_collaboration_app/features/messaging/presentation/bloc/chat_state.dart';
+import 'package:project_collaboration_app/features/messaging/presentation/bloc/conversation_bloc.dart';
 
 class ConversationScreen extends StatefulWidget {
   const ConversationScreen({super.key});
@@ -29,40 +29,52 @@ class _ConversationScreenState extends State<ConversationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            children: [
-              Expanded(
-                child: BlocBuilder<ConversationCubit, ConversationState>(
-                  builder:
-                      (context, state) => switch (state) {
-                        Success<List<Message>>(:final data) => ListView.builder(
-                          itemCount: data.length,
-                          itemBuilder:
-                              (context, index) => Text(data[index].text),
-                        ),
-                        _ => SizedBox(),
-                      },
-                ),
-              ),
-              SizedBox(height: 16),
-              // input field
-              Row(
-                children: [
-                  Expanded(child: TextField(controller: _controller)),
-                  IconButton(
-                    onPressed: () {
-                      context.read<ConversationCubit>().sendMessage(
-                        _controller.text,
-                      );
-                      _controller.clear();
-                    },
-                    icon: Icon(Icons.send),
+      body: BlocListener<ConversationBloc, ChatState>(
+        listener: (context, state) {
+          if (state is ChatError) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error)));
+          }
+        },
+        child: SafeArea(
+          child: Center(
+            child: Column(
+              children: [
+                Expanded(
+                  child: BlocBuilder<ConversationBloc, ChatState>(
+                    builder:
+                        (context, state) => switch (state) {
+                          ChatReady(:final messages) => ListView.builder(
+                            itemCount: messages.length,
+                            itemBuilder:
+                                (context, index) => Text(messages[index].text),
+                          ),
+                          ChatLoading() => Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          _ => SizedBox(),
+                        },
                   ),
-                ],
-              ),
-            ],
+                ),
+                SizedBox(height: 16),
+                // input field
+                Row(
+                  children: [
+                    Expanded(child: TextField(controller: _controller)),
+                    IconButton(
+                      onPressed: () {
+                        context.read<ConversationBloc>().add(
+                          MessageSent(_controller.text),
+                        );
+                        _controller.clear();
+                      },
+                      icon: Icon(Icons.send),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

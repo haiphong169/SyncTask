@@ -2,6 +2,8 @@ import 'package:project_collaboration_app/features/messaging/domain/entities/mes
 
 abstract class ChatEvent {}
 
+class FetchMessages extends ChatEvent {}
+
 class MessageSent extends ChatEvent {
   final String text;
 
