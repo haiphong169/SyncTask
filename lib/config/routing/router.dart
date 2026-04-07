@@ -163,22 +163,24 @@ GoRouter router(SessionListenable sessionListenable) {
           );
         },
       ),
-      // GoRoute(
-      //   path: '${Routes.mockConversation}/:partnerId',
-      //   builder: (context, state) {
-      //     final partnerId = state.pathParameters['partnerId']!;
-      //     return BlocProvider(
-      //       create:
-      //           (context) => MockConversationBloc(
-      //             partnerId: partnerId,
-      //             addConversationUseCase:
-      //                 context.read<AddConversationUsecase>(),
-      //             sendMessageUseCase: context.read<SendMessageUsecase>(),
-      //           ),
-      //       child: MockConversationScreen(),
-      //     );
-      //   },
-      // ),
+      GoRoute(
+        path: '${Routes.mockConversation}/:partnerId',
+        builder: (context, state) {
+          final partnerId = state.pathParameters['partnerId']!;
+          return BlocProvider(
+            create:
+                (context) => MockConversationBloc(
+                  partnerId: partnerId,
+                  addConversationUseCase:
+                      context.read<AddConversationUsecase>(),
+                  sendMessageUseCase: context.read<SendMessageUsecase>(),
+                  getUsersByUids: context.read<GetUsersByUidsUseCase>(),
+                  sessionProvider: context.read<SessionProvider>(),
+                )..add(Initialization()),
+            child: MockConversationScreen(),
+          );
+        },
+      ),
       GoRoute(
         path: '${Routes.conversation}/:conversationId',
         builder: (context, state) {

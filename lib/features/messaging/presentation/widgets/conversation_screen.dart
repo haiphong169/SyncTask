@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_collaboration_app/core/ui/user_circle_avatar.dart';
-import 'package:project_collaboration_app/features/messaging/domain/entities/conversation_display.dart';
+import 'package:project_collaboration_app/features/messaging/domain/entities/message.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/bloc/chat_event.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/bloc/chat_state.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/bloc/conversation_bloc.dart';
 import 'package:project_collaboration_app/features/messaging/presentation/widgets/chat_bubble.dart';
+import 'package:project_collaboration_app/features/user/domain/entities/user.dart';
 
 class ConversationScreen extends StatefulWidget {
   const ConversationScreen({super.key});
@@ -48,7 +49,11 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 children: [
                   Expanded(
                     child: switch (state) {
-                      ChatReady(:final display) => _buildMessageList(display),
+                      ChatReady(:final messages) => _buildMessageList(
+                        messages,
+                        state.currentUser!,
+                        state.partner!,
+                      ),
                       ChatLoading() => Center(
                         child: CircularProgressIndicator(),
                       ),
@@ -80,27 +85,30 @@ class _ConversationScreenState extends State<ConversationScreen> {
     );
   }
 
-  Widget _buildMessageList(ConversationDisplay display) {
+  Widget _buildMessageList(
+    List<Message> messages,
+    final User currentUser,
+    final User partner,
+  ) {
     final avatarUid = <String, void>{};
-    final reversedMessages = display.messages.reversed.toList();
+    final reversedMessages = messages.reversed.toList();
     for (int i = 0; i < reversedMessages.length; i++) {
       if (i > 0) {
-        if (reversedMessages[i].senderUid == display.currentUser.uid &&
-            reversedMessages[i - 1].senderUid ==
-                display.conversationPartner.uid) {
+        if (reversedMessages[i].senderUid == currentUser.uid &&
+            reversedMessages[i - 1].senderUid == partner.uid) {
           avatarUid[reversedMessages[i - 1].uid] = null;
         }
       }
     }
-    if (reversedMessages.last.senderUid == display.conversationPartner.uid) {
+    if (reversedMessages.last.senderUid == partner.uid) {
       avatarUid[reversedMessages.last.uid] = null;
     }
 
     return ListView.builder(
       reverse: true,
-      itemCount: display.messages.length,
+      itemCount: messages.length,
       itemBuilder: (context, index) {
-        final message = display.messages[index];
+        final message = messages[index];
         return Padding(
           padding: const EdgeInsetsGeometry.symmetric(
             vertical: 4,
@@ -109,11 +117,8 @@ class _ConversationScreenState extends State<ConversationScreen> {
           child: ChatRow(
             text: message.text,
             time: message.createdAt,
-            isMe: message.senderUid == display.currentUser.uid,
-            avatar:
-                avatarUid.containsKey(message.uid)
-                    ? display.conversationPartner.avatar
-                    : null,
+            isMe: message.senderUid == currentUser.uid,
+            avatar: avatarUid.containsKey(message.uid) ? partner.avatar : null,
           ),
         );
       },
@@ -121,22 +126,19 @@ class _ConversationScreenState extends State<ConversationScreen> {
   }
 
   AppBar _appBar(ChatState state) {
-    if (state is ChatReady) {
+    if (state.currentUser == null || state.partner == null) {
+      return AppBar();
+    } else {
       return AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            UserCircleAvatar(
-              avatar: state.display.conversationPartner.avatar,
-              radius: 28,
-            ),
+            UserCircleAvatar(avatar: state.partner!.avatar, radius: 28),
             SizedBox(width: 8),
-            Text(state.display.conversationPartner.username),
+            Text(state.partner!.username),
           ],
         ),
       );
-    } else {
-      return AppBar();
     }
   }
 }

@@ -1,4 +1,5 @@
-import 'package:project_collaboration_app/features/messaging/domain/entities/conversation_display.dart';
+import 'package:project_collaboration_app/features/messaging/domain/entities/message.dart';
+import 'package:project_collaboration_app/features/user/domain/entities/user.dart';
 
 abstract class ChatEvent {}
 
@@ -17,13 +18,20 @@ class ConversationCreated extends ChatEvent {
 }
 
 class MessageUpdated extends ChatEvent {
-  final ConversationDisplay display;
+  final List<Message> messages;
 
-  MessageUpdated(this.display);
+  MessageUpdated(this.messages);
 }
 
 class MessageError extends ChatEvent {
   final String message;
 
   MessageError(this.message);
+}
+
+class UsersUpdated extends ChatEvent {
+  final User currentUser;
+  final User partner;
+
+  UsersUpdated(this.currentUser, this.partner);
 }
