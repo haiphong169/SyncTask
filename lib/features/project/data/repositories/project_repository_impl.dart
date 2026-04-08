@@ -44,4 +44,10 @@ class ProjectRepositoryImpl implements ProjectRepository {
       projectUid: projectUid,
     );
   }
+
+  @override
+  Future<Project> getProjectById(String projectUid) async {
+    final model = await _projectRemoteDataSource.getProjectById(projectUid);
+    return model.toEntity();
+  }
 }

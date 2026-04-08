@@ -37,4 +37,10 @@ class ProjectRemoteDataSource {
       'members': FieldValue.arrayUnion([userUid]),
     });
   }
+
+  Future<ProjectModel> getProjectById(String projectUid) async {
+    final doc =
+        await _db.collection(FirebasePath.projects).doc(projectUid).get();
+    return ProjectModel.fromJson(doc.data()!, doc.id);
+  }
 }

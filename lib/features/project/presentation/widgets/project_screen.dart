@@ -196,13 +196,12 @@ class _ProjectScreenState extends State<ProjectScreen> {
         backgroundColor: Color(widget.backgroundColorValue),
         actions: [
           IconButton(
-            icon: Icon(Icons.archive_outlined),
+            icon: Icon(Icons.people),
             onPressed: () {
               context.push(
-                Routes.archiveWithId(
+                Routes.projectCollaboratorsWithId(
                   context.read<ProjectScreenCubit>().projectUid,
                 ),
-                extra: widget.backgroundColorValue,
               );
             },
           ),
@@ -375,11 +374,20 @@ class _ProjectScreenState extends State<ProjectScreen> {
                 'projectUid': context.read<ProjectScreenCubit>().projectUid,
               },
             );
+            break;
+          case 'archived_lists':
+            context.push(
+              Routes.archiveWithId(
+                context.read<ProjectScreenCubit>().projectUid,
+              ),
+            );
+            break;
         }
       },
       itemBuilder: (context) {
         return [
           PopupMenuItem(value: 'invite', child: Text('Invite collaborators')),
+          PopupMenuItem(value: 'archived_lists', child: Text('Archived lists')),
         ];
       },
     );

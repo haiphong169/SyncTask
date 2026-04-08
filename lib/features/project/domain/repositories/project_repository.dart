@@ -9,4 +9,5 @@ abstract class ProjectRepository {
     required String userUid,
     required String projectUid,
   });
+  Future<Project> getProjectById(String projectUid);
 }

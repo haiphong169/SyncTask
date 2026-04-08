@@ -17,11 +17,13 @@ import 'package:project_collaboration_app/features/messaging/presentation/widget
 import 'package:project_collaboration_app/features/project/presentation/bloc/add_project_cubit.dart';
 import 'package:project_collaboration_app/features/project/presentation/bloc/archive_screen_cubit.dart';
 import 'package:project_collaboration_app/features/project/presentation/bloc/home_screen_cubit.dart';
+import 'package:project_collaboration_app/features/project/presentation/bloc/project_collaborators_screen_cubit.dart';
 import 'package:project_collaboration_app/features/project/presentation/bloc/project_screen_cubit.dart';
 import 'package:project_collaboration_app/features/project/presentation/bloc/task_cubit.dart';
 import 'package:project_collaboration_app/features/project/presentation/widgets/add_project_screen.dart';
 import 'package:project_collaboration_app/features/project/presentation/widgets/archive_screen.dart';
 import 'package:project_collaboration_app/features/project/presentation/widgets/home_screen.dart';
+import 'package:project_collaboration_app/features/project/presentation/widgets/project_collaborators_screen.dart';
 import 'package:project_collaboration_app/features/project/presentation/widgets/project_screen.dart';
 import 'package:project_collaboration_app/features/project/presentation/widgets/task_screen.dart';
 import 'package:project_collaboration_app/features/user/domain/usecases/get_user_use_case.dart';
@@ -139,7 +141,7 @@ GoRouter router(SessionListenable sessionListenable) {
                   archiveTaskListUseCase: context.read(),
                   projectUid: projectId,
                 )..fetchArchivedTaskLists(),
-            child: ArchiveScreen(backgroundColorValue: state.extra as int),
+            child: ArchiveScreen(),
           );
         },
       ),
@@ -178,6 +180,21 @@ GoRouter router(SessionListenable sessionListenable) {
                   sessionProvider: context.read<SessionProvider>(),
                 )..add(Initialization()),
             child: MockConversationScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: '${Routes.projectCollaborators}/:projectId',
+        builder: (context, state) {
+          final projectId = state.pathParameters['projectId']!;
+          return BlocProvider(
+            create:
+                (context) => ProjectCollaboratorsScreenCubit(
+                  projectUid: projectId,
+                  getProjectByUid: context.read(),
+                  getUsersByUids: context.read(),
+                )..loadCollaborators(),
+            child: ProjectCollaboratorsScreen(),
           );
         },
       ),

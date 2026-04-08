@@ -5,8 +5,7 @@ import 'package:project_collaboration_app/features/project/presentation/bloc/arc
 import 'package:project_collaboration_app/utils/ui_state.dart';
 
 class ArchiveScreen extends StatefulWidget {
-  const ArchiveScreen({super.key, required this.backgroundColorValue});
-  final int backgroundColorValue;
+  const ArchiveScreen({super.key});
 
   @override
   State<ArchiveScreen> createState() => _ArchiveScreenState();
@@ -16,9 +15,6 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(
-        widget.backgroundColorValue,
-      ).withValues(alpha: 0.6),
       appBar: _appBar(),
       body: BlocListener<ArchiveScreenCubit, UiState<List<TaskList>>>(
         listener: (context, state) {
@@ -80,9 +76,6 @@ class _ArchiveScreenState extends State<ArchiveScreen> {
   }
 
   AppBar _appBar() {
-    return AppBar(
-      title: const Text('Archived Lists'),
-      backgroundColor: Color(widget.backgroundColorValue),
-    );
+    return AppBar(title: const Text('Archived Lists'));
   }
 }
