@@ -20,7 +20,10 @@ class MessageScreen extends StatelessWidget {
             SizedBox(height: 48),
             MessageSearchBar(
               onTap: () {
-                context.push(Routes.userSearch, extra: Routes.messages);
+                context.push(
+                  Routes.userSearch,
+                  extra: {'origin': Routes.messages},
+                );
               },
             ),
             SizedBox(height: 48),

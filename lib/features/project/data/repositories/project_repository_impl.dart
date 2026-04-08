@@ -33,4 +33,15 @@ class ProjectRepositoryImpl implements ProjectRepository {
   Future<void> updateProject(Project project) async {
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> inviteUser({
+    required String userUid,
+    required String projectUid,
+  }) {
+    return _projectRemoteDataSource.inviteUser(
+      userUid: userUid,
+      projectUid: projectUid,
+    );
+  }
 }

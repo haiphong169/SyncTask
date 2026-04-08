@@ -23,3 +23,5 @@ class OnNavigation extends SearchUserState {
   final Object? extra;
   OnNavigation(this.route, [this.extra]);
 }
+
+class OnNavigationBack extends SearchUserState {}

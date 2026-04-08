@@ -29,4 +29,8 @@ abstract final class Routes {
 
   static const archive = '/archive';
   static String archiveWithId(String projectId) => '$archive/$projectId';
+
+  static const projectCollaborators = '/projectCollaborators';
+  static String projectCollaboratorsWithId(String projectId) =>
+      '$projectCollaborators/$projectId';
 }

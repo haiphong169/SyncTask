@@ -204,13 +204,13 @@ GoRouter router(SessionListenable sessionListenable) {
       GoRoute(
         path: Routes.userSearch,
         builder: (context, state) {
-          final origin = state.extra as String;
           return BlocProvider(
             create:
                 (context) => SearchUserBloc(
                   searchUserUseCase: context.read<SearchUserUseCase>(),
                   checkExistingConversationUseCase: context.read(),
-                  origin: origin,
+                  inviteUserUseCase: context.read(),
+                  parameters: state.extra as Map<String, dynamic>,
                 ),
             child: UserSearchScreen(),
           );

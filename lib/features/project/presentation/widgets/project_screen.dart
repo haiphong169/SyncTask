@@ -206,6 +206,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
               );
             },
           ),
+          _projectOptionsButton(),
         ],
       );
     }
@@ -358,6 +359,29 @@ class _ProjectScreenState extends State<ProjectScreen> {
             PopupMenuItem(value: 'delete', child: Text('Delete List')),
             PopupMenuItem(value: 'archive', child: Text('Archive List')),
           ],
+    );
+  }
+
+  Widget _projectOptionsButton() {
+    return PopupMenuButton(
+      icon: Icon(Icons.more_vert),
+      onSelected: (value) {
+        switch (value) {
+          case 'invite':
+            context.push(
+              Routes.userSearch,
+              extra: {
+                'origin': Routes.project,
+                'projectUid': context.read<ProjectScreenCubit>().projectUid,
+              },
+            );
+        }
+      },
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem(value: 'invite', child: Text('Invite collaborators')),
+        ];
+      },
     );
   }
 }

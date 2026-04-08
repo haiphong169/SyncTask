@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:project_collaboration_app/config/routing/routes.dart';
 import 'package:project_collaboration_app/core/ui/user_circle_avatar.dart';
 import 'package:project_collaboration_app/features/user/presentation/bloc/search_user_bloc.dart';
 import 'package:project_collaboration_app/features/user/presentation/bloc/search_user_event.dart';
@@ -44,6 +45,10 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
           if (state is OnNavigation) {
             if (mounted) {
               context.push(state.route, extra: state.extra);
+            }
+          } else if (state is OnNavigationBack) {
+            if (mounted) {
+              context.pop();
             }
           }
         },
@@ -93,6 +98,20 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                                 user.username,
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
+                              trailing:
+                                  context
+                                              .read<SearchUserBloc>()
+                                              .parameters['origin'] ==
+                                          Routes.project
+                                      ? ElevatedButton(
+                                        onPressed: () {
+                                          context.read<SearchUserBloc>().add(
+                                            UserInvited(user.uid),
+                                          );
+                                        },
+                                        child: Text('Invite'),
+                                      )
+                                      : null,
                               onTap: () {
                                 context.read<SearchUserBloc>().add(
                                   ResultTapped(user.uid),

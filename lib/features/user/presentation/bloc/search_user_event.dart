@@ -11,3 +11,8 @@ class ResultTapped extends SearchUserEvent {
   final String resultUid;
   ResultTapped(this.resultUid);
 }
+
+class UserInvited extends SearchUserEvent {
+  final String resultUid;
+  UserInvited(this.resultUid);
+}

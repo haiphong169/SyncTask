@@ -28,4 +28,13 @@ class ProjectRemoteDataSource {
   Future<void> deleteProject(String projectUid) async {
     await _db.collection(FirebasePath.projects).doc(projectUid).delete();
   }
+
+  Future<void> inviteUser({
+    required String userUid,
+    required String projectUid,
+  }) {
+    return _db.collection(FirebasePath.projects).doc(projectUid).update({
+      'members': FieldValue.arrayUnion([userUid]),
+    });
+  }
 }

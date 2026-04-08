@@ -23,6 +23,7 @@ import 'package:project_collaboration_app/features/project/domain/repositories/t
 import 'package:project_collaboration_app/features/project/domain/repositories/task_repository.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/project/add_project_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/project/get_projects_usecase.dart';
+import 'package:project_collaboration_app/features/project/domain/usecases/project/invite_user_usercase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task/add_task_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task/check_task_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task/delete_task_usecase.dart';
@@ -274,6 +275,12 @@ final repositoryProviders = [
     create:
         (context) =>
             DeleteTaskUseCase(taskRepository: context.read<TaskRepository>()),
+  ),
+  RepositoryProvider<InviteUserUseCase>(
+    create:
+        (context) => InviteUserUseCase(
+          projectRepository: context.read<ProjectRepository>(),
+        ),
   ),
 ];
 

@@ -5,4 +5,8 @@ abstract class ProjectRepository {
   Future<void> createProject(Project project);
   Future<void> updateProject(Project project);
   Future<void> deleteProject(String uid);
+  Future<void> inviteUser({
+    required String userUid,
+    required String projectUid,
+  });
 }

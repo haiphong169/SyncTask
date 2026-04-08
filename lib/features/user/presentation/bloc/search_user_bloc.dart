@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_collaboration_app/config/routing/routes.dart';
 import 'package:project_collaboration_app/features/messaging/domain/usecases/conversation/check_existing_conversation_usecase.dart';
+import 'package:project_collaboration_app/features/project/domain/usecases/project/invite_user_usercase.dart';
 import 'package:project_collaboration_app/features/user/domain/entities/user.dart';
 import 'package:project_collaboration_app/features/user/domain/usecases/search_user_use_case.dart';
 import 'package:project_collaboration_app/features/user/presentation/bloc/search_user_event.dart';
@@ -11,14 +12,17 @@ import 'package:stream_transform/stream_transform.dart';
 class SearchUserBloc extends Bloc<SearchUserEvent, SearchUserState> {
   final SearchUserUseCase _searchUserUseCase;
   final CheckExistingConversationUseCase _checkExistingConversation;
-  final String origin;
+  final InviteUserUseCase _inviteUser;
+  final Map<String, dynamic> parameters;
 
   SearchUserBloc({
     required SearchUserUseCase searchUserUseCase,
     required CheckExistingConversationUseCase checkExistingConversationUseCase,
-    required this.origin,
+    required InviteUserUseCase inviteUserUseCase,
+    required this.parameters,
   }) : _checkExistingConversation = checkExistingConversationUseCase,
        _searchUserUseCase = searchUserUseCase,
+       _inviteUser = inviteUserUseCase,
        super(SearchInitial()) {
     on<SearchQueryChanged>(
       _onQueryChanged,
@@ -30,6 +34,23 @@ class SearchUserBloc extends Bloc<SearchUserEvent, SearchUserState> {
     });
 
     on<ResultTapped>(_onResultTapped);
+
+    on<UserInvited>(_onUserInvited);
+  }
+
+  Future<void> _onUserInvited(
+    UserInvited event,
+    Emitter<SearchUserState> emit,
+  ) async {
+    try {
+      await _inviteUser(
+        userUid: event.resultUid,
+        projectUid: parameters['projectUid'],
+      );
+      emit(OnNavigationBack());
+    } on Exception catch (e) {
+      emit(SearchError(e.toString()));
+    }
   }
 
   Future<void> _onResultTapped(
@@ -40,7 +61,7 @@ class SearchUserBloc extends Bloc<SearchUserEvent, SearchUserState> {
 
     switch (result) {
       case Ok<String?>(:final data):
-        if (origin == Routes.messages) {
+        if (parameters['origin'] == Routes.messages) {
           if (data != null) {
             emit(
               OnNavigation(Routes.conversationWithId(data), event.resultUid),
@@ -48,6 +69,8 @@ class SearchUserBloc extends Bloc<SearchUserEvent, SearchUserState> {
           } else {
             emit(OnNavigation(Routes.mockConversationWithId(event.resultUid)));
           }
+        } else if (parameters['origin'] == Routes.project) {
+          return;
         }
       case Failure<String?>(:final error):
         emit(SearchError(error.message));
