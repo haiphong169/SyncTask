@@ -173,12 +173,11 @@ class TaskRemoteDataSource {
   }
 
   Future<List<TaskModel>> fetchUserInbox(String userUid) async {
-    final inboxSnapshots =
-        await _db
-            .collection(FirebasePath.users)
-            .doc(userUid)
-            .collection(FirebasePath.inbox)
-            .get();
+    final inboxRef = _db
+        .collection(FirebasePath.users)
+        .doc(userUid)
+        .collection(FirebasePath.inbox);
+    final inboxSnapshots = await inboxRef.get();
 
     final tasks = <TaskModel>[];
     for (final inboxDoc in inboxSnapshots.docs) {
@@ -187,33 +186,40 @@ class TaskRemoteDataSource {
       final String taskListUid = inboxData['taskListUid'];
       final String taskUid = inboxData['taskUid'];
 
-      final taskSnapshot =
-          await _db
-              .collection(FirebasePath.projects)
-              .doc(projectUid)
-              .collection(FirebasePath.taskLists)
-              .doc(taskListUid)
-              .collection(FirebasePath.tasks)
-              .doc(taskUid)
-              .get();
+      final projectRef = _db.collection(FirebasePath.projects).doc(projectUid);
+      final projectSnapshot = await projectRef.get();
 
-      if (taskSnapshot.exists) {
-        tasks.add(
-          TaskModel.fromJson(
-            taskSnapshot.data()!,
-            taskUid,
-            taskListUid,
-            projectUid,
-          ),
-        );
-      } else {
-        await _db
-            .collection(FirebasePath.users)
-            .doc(userUid)
-            .collection(FirebasePath.inbox)
-            .doc(inboxDoc.id)
-            .delete();
+      if (!projectSnapshot.exists) {
+        await inboxRef.doc(inboxDoc.id).delete();
+        continue;
       }
+
+      final taskListRef = projectRef
+          .collection(FirebasePath.taskLists)
+          .doc(taskListUid);
+      final taskListSnapshot = await taskListRef.get();
+
+      if (!taskListSnapshot.exists) {
+        await inboxRef.doc(inboxDoc.id).delete();
+        continue;
+      }
+
+      final taskRef = taskListRef.collection(FirebasePath.tasks).doc(taskUid);
+      final taskSnapshot = await taskRef.get();
+
+      if (!taskSnapshot.exists) {
+        await inboxRef.doc(inboxDoc.id).delete();
+        continue;
+      }
+
+      tasks.add(
+        TaskModel.fromJson(
+          taskSnapshot.data()!,
+          taskUid,
+          taskListUid,
+          projectUid,
+        ),
+      );
     }
 
     return tasks;
