@@ -43,11 +43,36 @@ class InboxScreen extends StatelessWidget {
     return ListView.builder(
       itemCount: inbox.length,
       itemBuilder: (context, index) {
+        final task = inbox[index];
         return Card(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             child: Row(
-              children: [Text(inbox[index].name, style: textTheme.titleMedium)],
+              children: [
+                Checkbox(
+                  value: task.isCompleted,
+                  onChanged: (newValue) {
+                    if (newValue != null) {
+                      context.read<InboxCubit>().checkTask(
+                        task.projectUid,
+                        task.taskListUid,
+                        task.uid,
+                        newValue,
+                      );
+                    }
+                  },
+                  shape: CircleBorder(),
+                  checkColor: Colors.white,
+                  fillColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.selected)) {
+                      return Colors.green;
+                    }
+                    return Colors.transparent;
+                  }),
+                ),
+                SizedBox(width: 16),
+                Text(task.name, style: textTheme.titleMedium),
+              ],
             ),
           ),
         );
