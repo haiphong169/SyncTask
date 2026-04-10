@@ -6,7 +6,6 @@ class TaskListRemoteDataSource {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Stream<List<TaskListModel>> getTaskListStream(String projectUid) {
-    // todo add order by position
     final taskListStream = _db
         .collection(FirebasePath.projects)
         .doc(projectUid)
@@ -29,13 +28,24 @@ class TaskListRemoteDataSource {
         .set(taskList.toJson());
   }
 
-  Future<void> deleteTaskList(String projectUid, String taskListUid) {
-    return _db
+  Future<void> deleteTaskList(String projectUid, String taskListUid) async {
+    final batch = _db.batch();
+
+    final taskListRef = _db
         .collection(FirebasePath.projects)
         .doc(projectUid)
         .collection(FirebasePath.taskLists)
-        .doc(taskListUid)
-        .delete();
+        .doc(taskListUid);
+
+    final taskSubcollection =
+        await taskListRef.collection(FirebasePath.tasks).get();
+
+    for (final doc in taskSubcollection.docs) {
+      batch.delete(doc.reference);
+    }
+    batch.delete(taskListRef);
+
+    return batch.commit();
   }
 
   Future<void> updateTaskListFields(

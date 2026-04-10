@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project_collaboration_app/features/project/data/models/task_model.dart';
 import 'package:project_collaboration_app/utils/firebase_path.dart';
+import 'package:project_collaboration_app/utils/logger.dart';
 
 class TaskRemoteDataSource {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -179,31 +180,41 @@ class TaskRemoteDataSource {
             .collection(FirebasePath.inbox)
             .get();
 
-    final tasks = await Future.wait(
-      inboxSnapshots.docs.map((inboxDoc) async {
-        final inboxData = inboxDoc.data();
-        final String projectUid = inboxData['projectUid'];
-        final String taskListUid = inboxData['taskListUid'];
-        final String taskUid = inboxData['taskUid'];
+    final tasks = <TaskModel>[];
+    for (final inboxDoc in inboxSnapshots.docs) {
+      final inboxData = inboxDoc.data();
+      final String projectUid = inboxData['projectUid'];
+      final String taskListUid = inboxData['taskListUid'];
+      final String taskUid = inboxData['taskUid'];
 
-        final taskSnapshot =
-            await _db
-                .collection(FirebasePath.projects)
-                .doc(projectUid)
-                .collection(FirebasePath.taskLists)
-                .doc(taskListUid)
-                .collection(FirebasePath.tasks)
-                .doc(taskUid)
-                .get();
+      final taskSnapshot =
+          await _db
+              .collection(FirebasePath.projects)
+              .doc(projectUid)
+              .collection(FirebasePath.taskLists)
+              .doc(taskListUid)
+              .collection(FirebasePath.tasks)
+              .doc(taskUid)
+              .get();
 
-        return TaskModel.fromJson(
-          taskSnapshot.data()!,
-          taskUid,
-          taskListUid,
-          projectUid,
+      if (taskSnapshot.exists) {
+        tasks.add(
+          TaskModel.fromJson(
+            taskSnapshot.data()!,
+            taskUid,
+            taskListUid,
+            projectUid,
+          ),
         );
-      }),
-    );
+      } else {
+        await _db
+            .collection(FirebasePath.users)
+            .doc(userUid)
+            .collection(FirebasePath.inbox)
+            .doc(inboxDoc.id)
+            .delete();
+      }
+    }
 
     return tasks;
   }

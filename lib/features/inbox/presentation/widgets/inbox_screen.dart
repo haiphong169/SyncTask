@@ -19,7 +19,18 @@ class InboxScreen extends StatelessWidget {
       },
       builder: (context, state) {
         if (state is Success<List<Task>>) {
-          return _buildInboxList(context, state.data);
+          return Scaffold(
+            body: SafeArea(
+              child: Column(
+                children: [
+                  SizedBox(height: 12),
+                  Text('Inbox', style: Theme.of(context).textTheme.titleLarge),
+                  SizedBox(height: 36),
+                  Expanded(child: _buildInboxList(context, state.data)),
+                ],
+              ),
+            ),
+          );
         } else {
           return SizedBox();
         }
@@ -28,10 +39,18 @@ class InboxScreen extends StatelessWidget {
   }
 
   Widget _buildInboxList(BuildContext context, List<Task> inbox) {
+    final textTheme = Theme.of(context).textTheme;
     return ListView.builder(
       itemCount: inbox.length,
       itemBuilder: (context, index) {
-        return Row(children: [Text(inbox[index].name)]);
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Row(
+              children: [Text(inbox[index].name, style: textTheme.titleMedium)],
+            ),
+          ),
+        );
       },
     );
   }

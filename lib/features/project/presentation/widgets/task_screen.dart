@@ -130,22 +130,15 @@ class _TaskScreenState extends State<TaskScreen> {
               padding: const EdgeInsets.only(right: 8, bottom: 16),
               child: TextButton(
                 onPressed: () {
-                  if (model.isOwner) {
-                  } else {
-                    context.read<TaskCubit>().assignTaskToMyself(
-                      widget.projectUid,
-                      widget.taskListUid,
-                      widget.taskUid,
-                      model.assignees.contains(model.currentUser)
-                          ? false
-                          : true,
-                    );
-                  }
+                  context.read<TaskCubit>().assignTaskToMyself(
+                    widget.projectUid,
+                    widget.taskListUid,
+                    widget.taskUid,
+                    model.assignees.contains(model.currentUser) ? false : true,
+                  );
                 },
                 child: Text(
-                  model.isOwner
-                      ? '+ Assign'
-                      : model.assignees.contains(model.currentUser)
+                  model.assignees.contains(model.currentUser)
                       ? 'Unassign myself'
                       : 'Assign myself',
                 ),

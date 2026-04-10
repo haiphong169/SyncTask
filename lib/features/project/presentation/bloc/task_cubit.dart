@@ -98,27 +98,6 @@ class TaskCubit extends Cubit<UiState<TaskUiModel>> {
     }
   }
 
-  void assignTaskToUser(
-    String projectUid,
-    String taskListUid,
-    String taskUid,
-    String userUid,
-    bool isAssign,
-  ) async {
-    try {
-      await _assignUserToTaskUsecase(
-        projectUid,
-        taskListUid,
-        taskUid,
-        userUid,
-        isAssign,
-      );
-      // todo fix here
-    } on Exception catch (e) {
-      emit(UiState.error(e.toString()));
-    }
-  }
-
   void assignTaskToMyself(
     String projectUid,
     String taskListUid,
