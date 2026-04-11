@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:project_collaboration_app/features/inbox/domain/usecases/get_inbox_tasks_usecase.dart';
 import 'package:project_collaboration_app/features/project/domain/entities/task.dart';
 import 'package:project_collaboration_app/features/project/domain/usecases/task/check_task_usecase.dart';
-import 'package:project_collaboration_app/utils/logger.dart';
 import 'package:project_collaboration_app/utils/ui_state.dart';
 
 class InboxCubit extends Cubit<UiState<List<Task>>> {

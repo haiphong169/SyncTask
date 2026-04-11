@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:project_collaboration_app/config/routing/routes.dart';
 import 'package:project_collaboration_app/features/inbox/presentation/bloc/inbox_cubit.dart';
 import 'package:project_collaboration_app/features/project/domain/entities/task.dart';
 import 'package:project_collaboration_app/utils/ui_state.dart';
@@ -18,33 +20,59 @@ class InboxScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        if (state is Success<List<Task>>) {
-          return Scaffold(
-            body: SafeArea(
-              child: Column(
-                children: [
-                  SizedBox(height: 12),
-                  Text('Inbox', style: Theme.of(context).textTheme.titleLarge),
-                  SizedBox(height: 36),
-                  Expanded(child: _buildInboxList(context, state.data)),
-                ],
-              ),
+        return Scaffold(
+          body: SafeArea(
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    SizedBox(height: 12),
+                    Text(
+                      'Inbox',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    SizedBox(height: 36),
+                    Expanded(
+                      child: Card(
+                        margin: const EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          bottom: 100,
+                        ),
+
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 16,
+                          ),
+                          child: _buildInboxList(
+                            context,
+                            state.getData() ?? [],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                if (state is Loading<List<Task>>)
+                  Center(child: CircularProgressIndicator()),
+              ],
             ),
-          );
-        } else {
-          return SizedBox();
-        }
+          ),
+        );
       },
     );
   }
 
   Widget _buildInboxList(BuildContext context, List<Task> inbox) {
     final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return ListView.builder(
       itemCount: inbox.length,
       itemBuilder: (context, index) {
         final task = inbox[index];
         return Card(
+          color: colorScheme.surface,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             child: Row(
@@ -71,7 +99,21 @@ class InboxScreen extends StatelessWidget {
                   }),
                 ),
                 SizedBox(width: 16),
-                Text(task.name, style: textTheme.titleMedium),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      context.push(
+                        Routes.taskWithId(task.uid),
+                        extra: {
+                          'taskName': task.name,
+                          'projectUid': task.projectUid,
+                          'taskListUid': task.taskListUid,
+                        },
+                      );
+                    },
+                    child: Text(task.name, style: textTheme.titleMedium),
+                  ),
+                ),
               ],
             ),
           ),
