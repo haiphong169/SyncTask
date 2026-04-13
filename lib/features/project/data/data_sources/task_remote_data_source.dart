@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:project_collaboration_app/features/project/data/models/task_model.dart';
 import 'package:project_collaboration_app/utils/firebase_path.dart';
 
