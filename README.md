@@ -16,14 +16,14 @@ The codebase follows **Clean Architecture**, where every feature is split into t
 
 ```
 lib/
-├── config/                          # App-wide configuration
-│   ├── dependencies.dart            # Dependency injection setup
-│   ├── hive_adapters.dart           # Hive type adapter registrations
+├── config/                          
+│   ├── dependencies.dart            
+│   ├── hive_adapters.dart           
 │   └── routing/
 │       ├── router.dart
 │       └── routes.dart
 │
-├── core/                            # Shared UI & theme
+├── core/                            
 │   ├── theme/
 │   │   ├── app_theme.dart
 │   │   ├── color_scheme.dart
@@ -35,40 +35,9 @@ lib/
 ├── features/
 │   │
 │   ├── auth/                        # Authentication
-│   │   ├── 🟣 domain/
-│   │   │   ├── repositories/
-│   │   │   │   ├── auth_repository.dart
-│   │   │   │   └── session_provider.dart
-│   │   │   └── usecases/
-│   │   │       ├── login_usecase.dart
-│   │   │       ├── logout_usecase.dart
-│   │   │       ├── register_usecase.dart
-│   │   │       └── sign_in_with_google_usecase.dart
-│   │   ├── 🔵 data/
-│   │   │   ├── data_sources/
-│   │   │   │   └── auth_remote_data_source.dart
-│   │   │   └── repositories/
-│   │   │       ├── auth_repository_impl.dart
-│   │   │       └── session_provider_impl.dart
-│   │   └── 🟢 presentation/
-│   │       ├── bloc/
-│   │       │   ├── login_cubit.dart
-│   │       │   ├── logout_cubit.dart
-│   │       │   └── register_cubit.dart
-│   │       └── widgets/
-│   │           ├── login_screen.dart
-│   │           └── register_screen.dart
 │   │
 │   ├── inbox/                       # Inbox (assigned tasks)
-│   │   ├── 🟣 domain/
-│   │   │   └── usecases/
-│   │   │       └── get_inbox_tasks_usecase.dart
-│   │   └── 🟢 presentation/
-│   │       ├── bloc/
-│   │       │   └── inbox_cubit.dart
-│   │       └── widgets/
-│   │           └── inbox_screen.dart
-│   │
+│   │   
 │   ├── messaging/                   # Real-time chat & conversations
 │   │   ├── 🟣 domain/
 │   │   │   ├── entities/
@@ -114,9 +83,6 @@ lib/
 │   │           └── message_screen.dart
 │   │
 │   ├── profile/                     # User profile
-│   │   └── 🟢 presentation/
-│   │       └── widgets/
-│   │           └── profile_screen.dart
 │   │
 │   ├── project/                     # Projects, task lists & tasks
 │   │   ├── 🟣 domain/
@@ -184,35 +150,6 @@ lib/
 │   │           └── task_screen.dart
 │   │
 │   └── user/                        # User search & profile data
-│       ├── 🟣 domain/
-│       │   ├── entities/
-│       │   │   └── user.dart
-│       │   ├── repositories/
-│       │   │   └── user_repository.dart
-│       │   └── usecases/
-│       │       ├── get_user_use_case.dart
-│       │       ├── get_users_by_uids_usecase.dart
-│       │       └── search_user_use_case.dart
-│       ├── 🔵 data/
-│       │   ├── data_sources/
-│       │   │   ├── user_local_data_source.dart
-│       │   │   └── user_remote_data_source.dart
-│       │   ├── models/
-│       │   │   ├── user_model.dart
-│       │   │   └── user_model.g.dart
-│       │   └── repositories/
-│       │       └── user_repository_impl.dart
-│       └── 🟢 presentation/
-│           ├── actions/
-│           │   └── user_search_action.dart
-│           ├── bloc/
-│           │   ├── search_user_bloc.dart
-│           │   ├── search_user_event.dart
-│           │   ├── search_user_state.dart
-│           │   └── user_cubit.dart
-│           └── widgets/
-│               ├── user_search_bar.dart
-│               └── user_search_screen.dart
 │
 ├── utils/                           # Shared utilities & helpers
 │   ├── app_date_formatter.dart
@@ -228,3 +165,34 @@ lib/
 ├── firebase_options.dart
 └── main.dart
 ```
+
+---
+
+## 📸 Screenshots
+
+<table>
+  <tr>
+    <td align="center"><b>Login Screen</b></td>
+    <td align="center"><b>Home Screen</b></td>
+    <td align="center"><b>Adding Project</b></td>
+    <td align="center"><b>Project Screen</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/login_screen.jpg" width="180"/></td>
+    <td><img src="assets/screenshots/home_screen.jpg" width="180"/></td>
+    <td><img src="assets/screenshots/add_new_project.jpg" width="180"/></td>
+    <td><img src="assets/screenshots/project_screen.jpg" width="180"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Task Screen</b></td>
+    <td align="center"><b>Inviting Users</b></td>
+    <td align="center"><b>Message Screen</b></td>
+    <td align="center"><b>Conversation Screen</b></td>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/task_screen.jpg" width="180"/></td>
+    <td><img src="assets/screenshots/inviting_users.jpg" width="180"/></td>
+    <td><img src="assets/screenshots/message_screen.jpg" width="180"/></td>
+    <td><img src="assets/screenshots/conversation_screen.jpg" width="180"/></td>
+  </tr>
+</table>
